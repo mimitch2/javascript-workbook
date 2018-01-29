@@ -56,20 +56,25 @@ if (typeof describe === 'function') {
     it('should detect which hand won', () => {
       assert.equal(rockPaperScissors('rock', 'paper'), "Hand two wins!");
       assert.equal(rockPaperScissors('paper', 'scissors'), "Hand two wins!");
+      assert.equal(rockPaperScissors('scissors', 'rock'), "Hand two wins!");
       assert.equal(rockPaperScissors('rock', 'scissors'), "Hand one wins!");
       assert.equal(rockPaperScissors('scissors', 'paper'), "Hand one wins!");
+      assert.equal(rockPaperScissors('paper', 'rock'), "Hand one wins!");
     });
-    it('should scrub input to ensure lowercase with "trim"ed whitepace', () => {
-      assert.equal(rockPaperScissors('rOcK', ' paper '), "Hand two wins!");
-      assert.equal(rockPaperScissors('Paper', 'SCISSORS'), "Hand two wins!");
-      assert.equal(rockPaperScissors('rock ', 'sCiSsOrs'), "Hand two wins!");
-    });
+
   });
   describe('#isitValid()', () => {
+    it('should scrub input to ensure lowercase with "trim"ed whitepace', () => {
+      assert.equal(isItValid('rOcK', ' paper '), "Hand two wins!");
+      assert.equal(isItValid('Paper', 'SCISSORS'), "Hand two wins!");
+      assert.equal(isItValid('rock  ', '    sCiSsOrs'), "Hand one wins!");
+    });
     it('should report invalid entries', () => {
       assert.equal(isItValid('blue', 'red'), "Inavlid entry!! Please type rock, paper or scissors.");
       assert.equal(isItValid('paper', 'yellow'), "Inavlid entry!! Please type rock, paper or scissors.");
-      assert.equal(isItValid('"rock"', 'sCiSsOrs'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(isItValid('"rock"', '12345'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(isItValid('%@$%#', 'rock'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(isItValid('   ', 'pa per'), "Inavlid entry!! Please type rock, paper or scissors.");
     });
   });
 }
