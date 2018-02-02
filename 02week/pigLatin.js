@@ -41,40 +41,40 @@ const rl = readline.createInterface({
 let wordArray =[];//global array
 
 const isInputValid=(word)=> {
-  word = word.toLowerCase();//force input to lowercase
   if (word.indexOf(' ') === -1) {//check to be sure there are no spaces in user input
-    // console.log('INSDIE VALIDATOR');
-    return splitWord(word);//if there are no spaces, call splitWord()
-  } else{
-    return 'Invalid input! Only use a single word with no spaces.'//else throw error
+    return true
   }
 }
 
 const splitWord=(word)=> {
   wordArray = word.split('');//insert the string as an array of it's letters into wordArray[]
-  // console.log(wordArray);
-  return pigLatin(wordArray);//call pigLatin()
 }
 
 
 const pigLatin=(word)=> {
   const vowelArray = ['a','e','i','o','u'];
-  if (vowelArray.indexOf(wordArray[0]) !== -1) {// check if first letter is a vowel
-    return `${wordArray.join('')}yay`;//if so, just return the full word + yay
-  }else{//else move and analyze where the first vowel is
-    let vowelIndex;//create variable to store first vowel index position
-    word = wordArray.join('');//change the array back into a string
-    for (var i = 0; i < word.length; i++) {//loop through string....
-      vowelIndex = word.charAt(i);//assign variable char the index of the vowel...
-      if(vowelArray.indexOf(vowelIndex) !== -1)
-        break;//stop loop once a vowel is found, thus char will be the index of that first vowel
-    }
-    if (i < word.length) {//make sure it actually finds a vowel
-      let newWord = word.substring(i);//if so, create new variable that is the original string from the first vowel to the end
-      return `${newWord + word.substring(0, i)}ay`//return the new word, plus the first removed letter(s) plus ay
+  word = word.toLowerCase().trim();//force input to lowercase
+  if (isInputValid(word) !== true){
+    return 'Invalid input! Only use a single word with no spaces.'
+  }else{
+    splitWord(word);
+    if (vowelArray.indexOf(wordArray[0]) !== -1) {// check if first letter is a vowel
+      return `${wordArray.join('')}yay`;//if so, just return the full word + yay
+    }else{//else move and analyze where the first vowel is
+      let vowelIndex;//create variable to store first vowel index position
+      word = wordArray.join('');//change the array back into a string
+      for (var i = 0; i < word.length; i++) {//loop through string....
+        vowelIndex = word.charAt(i);//assign variable char the index of the vowel...
+        if(vowelArray.indexOf(vowelIndex) !== -1)
+          break;//stop loop once a vowel is found, thus char will be the index of that first vowel
+      }
+      if (i < word.length) {//make sure it actually finds a vowel
+        let newWord = word.substring(i);//if so, create new variable that is the original string from the first vowel to the end
+        return `${newWord + word.substring(0, i)}ay`//return the new word, plus the first removed letter(s) plus ay
       // console.log(newWord + word.substring(0, i));
-    }else{
-      return "There are no vowels in this word. Do you even English bro?"//unless there are no vowels in the word
+      }else{
+        return "There are no vowels in this word. Do you even English bro?"//unless there are no vowels in the word
+      }
     }
   }
 }
@@ -82,7 +82,7 @@ const pigLatin=(word)=> {
 
 const getPrompt=()=> {
   rl.question('word ', (answer) => {
-    console.log( isInputValid(answer) );//changed this to call input function
+    console.log( pigLatin(answer) );//changed this to call input function
     getPrompt();
   });
 }
@@ -120,7 +120,7 @@ if (typeof describe === 'function') {
 
 // })
 
-// 
+//
 // <******************BACKUP************************************>
 //
 // 'use strict';
