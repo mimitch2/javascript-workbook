@@ -50,6 +50,10 @@ const splitWord=(word)=> {
   wordArray = word.split('');//insert the string as an array of it's letters into wordArray[]
 }
 
+const joinWord=(word)=> {
+  word = wordArray.join('');//change the array back into a string
+}
+
 
 const pigLatin=(word)=> {
   const vowelArray = ['a','e','i','o','u'];
@@ -59,10 +63,11 @@ const pigLatin=(word)=> {
   }else{
     splitWord(word);
     if (vowelArray.indexOf(wordArray[0]) !== -1) {// check if first letter is a vowel
-      return `${wordArray.join('')}yay`;//if so, just return the full word + yay
+      joinWord();
+      return `${word}yay`;//if so, just return the full word + yay
     }else{//else move and analyze where the first vowel is
       let vowelIndex;//create variable to store first vowel index position
-      word = wordArray.join('');//change the array back into a string
+      joinWord();
       for (var i = 0; i < word.length; i++) {//loop through string....
         vowelIndex = word.charAt(i);//assign variable char the index of the vowel...
         if(vowelArray.indexOf(vowelIndex) !== -1)
@@ -71,7 +76,6 @@ const pigLatin=(word)=> {
       if (i < word.length) {//make sure it actually finds a vowel
         let newWord = word.substring(i);//if so, create new variable that is the original string from the first vowel to the end
         return `${newWord + word.substring(0, i)}ay`//return the new word, plus the first removed letter(s) plus ay
-      // console.log(newWord + word.substring(0, i));
       }else{
         return "There are no vowels in this word. Do you even English bro?"//unless there are no vowels in the word
       }
