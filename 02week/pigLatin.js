@@ -41,7 +41,7 @@ const rl = readline.createInterface({
 let wordArray =[];//global array
 
 const isInputValid=(word)=> {
-  if (word.indexOf(' ') === -1) {//check to be sure there are no spaces in user input
+  if (word.search(/\s/g) === -1  && word.search(/\d+/g) === -1) {
     return true
   }
 }
@@ -56,6 +56,8 @@ const joinWord=(word)=> {
 
 
 const pigLatin=(word)=> {
+  // console.log((word.search(/\d+/g)));
+
   const vowelArray = ['a','e','i','o','u'];
   word = word.toLowerCase().trim();//force input to lowercase
   if (isInputValid(word) !== true){
@@ -111,6 +113,14 @@ if (typeof describe === 'function') {
     it('should lowercase and trim word before translation', () => {
       assert.equal(pigLatin('HeLlO '), 'ellohay');
       assert.equal(pigLatin(' RoCkEt'), 'ocketray');
+    });
+    it('should thow error if there are 2 or more words entered', () => {
+      assert.equal(pigLatin('Hello there '), 'Invalid input! Only use a single word with no spaces.');
+      assert.equal(pigLatin(' red car'), 'Invalid input! Only use a single word with no spaces.');
+    });
+    it('should thow error if there are no vowels', () => {
+      assert.equal(pigLatin('ghtrk'), "There are no vowels in this word. Do you even English bro?");
+      assert.equal(pigLatin('6789'), "There are no vowels in this word. Do you even English bro?");
     });
   });
 } else {
