@@ -7,115 +7,98 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-//<*******************Whiteboard******************************>
-// 1. declare a GLOBAL empty array called "wordArray" to store the individual letters of the input string
-//
-// 2.  create the function isInputValid(word) that should first force all letters to lower case, then validate that input taken from getPrompt() is only a single word.
-//
-// -first force string to lower case using toLowerCase()
-// -move onto the if/else statement:
-// IF the word contains no spaces (this is done using indexOf and searching for a space ‘ ‘)
-// THEN
-// -move onto the next function splitWord()
-// ELSE
-// -Throw an error that the input is invalid
-// 3.  function splitWord(word):
-// -assign wordArray to the string with .split() attached to create an array of the individual letters
-// -move onto the next function pigLatin()
-//
-// 4. function pigLatin():
-// -declare a LOCAL array that stores all vowels named vowelArray[‘a’, ‘e’, ‘i’, ‘o’, ‘u’] to reference
-// -if/else statement to determine if the first letter is a vowel:
-// IF the first letter in wordArray is a vowel (use indexOf to compare wordArray’s 0 index)
-// THEN
-// -turn the array of letters back into a string (using.join()),  and return the full string plus ‘yay”)
-// ELSE
-// -create a variable “vowelIndex” to store the index of the first vowel found
-// -loop through the string until you find the index position of the first vowel encountered using a for loop, assigning the for loop’s i variable to “vowelIndex” UNTIL it gets to a vowel (by using another if statement that if it encounters a vowel, stop the loop)
-// -Once you have the index of the first vowel, create a new variable newWord assign it to the subString() of the original string
-// -return the newWord variable plus the original string starting at the index position if the vowel plus “ay”
-// ELSE
-// -return error that the word has no vowels
-//<****************************Begin code*********************************>
+/*Whiteboard plan:
+Rules-
+Scissors beats paper | paper beats rock | rock beats scissors | both hands equal is a tie
 
-let wordArray =[];//global array
+1. Create a function that makes inputs all lower case and removes whitespace (and store them in variables) PLUS checks that user inputs are valid. If everything passes, move on to #2 ELSE display "invalid entry"
 
-const isInputValid=(word)=> {
-  word = word.toLowerCase();//force input to lowercase
-  if (word.indexOf(' ') === -1) {//check to be sure there are no spaces in user input
-    // console.log('INSDIE VALIDATOR');
-    return splitWord(word);//if there are no spaces, call splitWord()
-  } else{
-    return 'Invalid input! Only use a single word with no spaces.'//else throw error
-  }
-}
+-use toLowerCase() and trim() to force inputs to lower case and to remove whitespace
+-use includes() to verify that both inputs exactly match the valid options which are stored in an array
+-if both inputs are valid, move onto the next function, if both are not valid, display "invalid input"
 
-const splitWord=(word)=> {
-  wordArray = word.split('');//insert the string as an array of it's letters into wordArray[]
-  // console.log(wordArray);
-  return pigLatin(wordArray);//call pigLatin()
-}
+2. Create function that determines if user1 wins, user2 wins or it's a tie. Inside this function, create an if else/if else conditional for a tie first, then test for user1 win, ELSE user2 wins
 
+-a tie can be detrmined if both inputs are equal
+-a hand1 win can be detrmined by comparing both inputs and accounting for 3 separate ways hand1 could win.
+-a hand2 win does not need to be directly determined, since if a tie or hand1 win has not occured, it's the only other possible outcome.
+3. return the result of the game (hand1 win, hand2 win, tie)
 
-const pigLatin=(word)=> {
-  const vowelArray = ['a','e','i','o','u'];
-  if (vowelArray.indexOf(wordArray[0]) !== -1) {// check if first letter is a vowel
-    return `${wordArray.join('')}yay`;//if so, just return the full word + yay
-  }else{//else move and analyze where the first vowel is
-    let vowelIndex;//create variable to store first vowel index position
-    word = wordArray.join('');//change the array back into a string
-    for (var i = 0; i < word.length; i++) {//loop through string....
-      vowelIndex = word.charAt(i);//assign variable char the index of the vowel...
-      if(vowelArray.indexOf(vowelIndex) !== -1)
-        break;//stop loop once a vowel is found, thus char will be the index of that first vowel
-    }
-    if (i < word.length) {//make sure it actually finds a vowel
-      let newWord = word.substring(i);//if so, create new variable that is the original string from the first vowel to the end
-      return `${newWord + word.substring(0, i)}ay`//return the new word, plus the first removed letter(s) plus ay
-      // console.log(newWord + word.substring(0, i));
-    }else{
-      return "There are no vowels in this word. Do you even English bro?"//unless there are no vowels in the word
-    }
+*/
+
+let newHand1
+let newHand2
+
+const isItValid=(newHand1, newHand2)=> {//check to see if answers are valid before comparing
+  const possibleHands = ["rock", "paper", "scissors"];//array of valid inputs
+  if (possibleHands.indexOf(newHand1) !== -1 && possibleHands.indexOf(newHand2) !== -1){
+    return true
   }
 }
 
 
-const getPrompt=()=> {
-  rl.question('word ', (answer) => {
-    console.log( isInputValid(answer) );//changed this to call input function
-    getPrompt();
+const rockPaperScissors=(hand1, hand2)=> {
+
+  newHand1 = hand1.toLowerCase().trim();//remove caps and white space
+  newHand2 = hand2.toLowerCase().trim();//remove caps and white space
+  if(isItValid(newHand1, newHand2) !==true){
+    return "Inavlid entry!! Please type rock, paper or scissors."
+  } else if (newHand1 === newHand2) {//first check for a tie
+    return 'It`s a tie!'//if true, it's a tie, if false move on
+  } else if (newHand1 === 'rock' && newHand2 === 'scissors' ||//if no tie, check if hand1 is a winner
+      newHand1 === 'scissors' && newHand2 === 'paper' ||
+      newHand1 === 'paper' && newHand2 ==='rock'){
+    return 'Hand 1 wins!'//if true, hand1 wins
+  }else{
+    return 'Hand 2 wins!'//else hand2 wins (no need to set conditions here)
+  }
+}
+
+const getPrompt=()=> {//change to ES6 syntax
+  rl.question('hand1: ', (answer1) => {
+    rl.question('hand2: ', (answer2) => {
+      console.log(rockPaperScissors(answer1, answer2));
+      getPrompt();
+    });
   });
 }
 
-//<***************************Tests*********************>
+
+
+// Tests  mocha
 
 if (typeof describe === 'function') {
+  describe('#rockPaperScissors()', () => {
+    it('should detect a tie', () => {
+      assert.equal(rockPaperScissors('rock', 'rock'), "It`s a tie!");
+      assert.equal(rockPaperScissors('paper', 'paper'), "It`s a tie!");
+      assert.equal(rockPaperScissors('scissors', 'scissors'), "It`s a tie!");
+    });
+    it('should detect which hand won', () => {
+      assert.equal(rockPaperScissors('rock', 'paper'), "Hand 2 wins!");
+      assert.equal(rockPaperScissors('paper', 'scissors'), "Hand 2 wins!");
+      assert.equal(rockPaperScissors('scissors', 'rock'), "Hand 2 wins!");
+      assert.equal(rockPaperScissors('rock', 'scissors'), "Hand 1 wins!");
+      assert.equal(rockPaperScissors('scissors', 'paper'), "Hand 1 wins!");
+      assert.equal(rockPaperScissors('paper', 'rock'), "Hand 1 wins!");
+    });
 
-  describe('#pigLatin()', () => {
-    it('should translate a simple word', () => {
-      assert.equal(pigLatin('car'), 'arcay');
-      assert.equal(pigLatin('dog'), 'ogday');
+  });
+  describe('#rockPaperScissors()', () => {
+    it('should scrub input to ensure lowercase with "trim"ed whitepace', () => {
+      assert.equal(rockPaperScissors('rOcK', ' paper '), "Hand 2 wins!");
+      assert.equal(rockPaperScissors('Paper', 'SCISSORS'), "Hand 2 wins!");
+      assert.equal(rockPaperScissors('rock  ', '    sCiSsOrs'), "Hand 1 wins!");
     });
-    it('should translate a complex word', () => {
-      assert.equal(pigLatin('create'), 'eatecray');
-      assert.equal(pigLatin('valley'), 'alleyvay');
-    });
-    it('should attach "yay" if word begins with vowel', () => {
-      assert.equal(pigLatin('egg'), 'eggyay');
-      assert.equal(pigLatin('emission'), 'emissionyay');
-    });
-    it('should lowercase and trim word before translation', () => {
-      assert.equal(pigLatin('HeLlO '), 'ellohay');
-      assert.equal(pigLatin(' RoCkEt'), 'ocketray');
+    it('should report invalid entries', () => {
+      assert.equal(rockPaperScissors('blue', 'red'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(rockPaperScissors('paper', 'yellow'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(rockPaperScissors('"rock"', '12345'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(rockPaperScissors('%@$%#', 'rock'), "Inavlid entry!! Please type rock, paper or scissors.");
+      assert.equal(rockPaperScissors('   ', 'pa per'), "Inavlid entry!! Please type rock, paper or scissors.");
     });
   });
 } else {
 
   getPrompt();
-
 }
-
-
-//forEach replaces loops!!!  Must be array  array.forEach((goodnameForAFunction)=>{
-
-// })
