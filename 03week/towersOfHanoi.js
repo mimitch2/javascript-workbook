@@ -37,9 +37,11 @@ function isLegal() {
   return true
 }
 
-function checkForWin() {
-  // Your code here
-
+const checkForWin=()=> {//see if last array= 4,3,2,1
+  if (stacks.c.length === 4) {
+    console.log("INSIDE WIN CHECK");
+    return true
+  }
 }
 
 function towersOfHanoi(startStack, endStack) {
@@ -48,6 +50,7 @@ function towersOfHanoi(startStack, endStack) {
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that inout is valid, and move is legal
     moves++;
     movePiece(startStack, endStack);
+    checkForWin(startStack, endStack);
   }
 }
 
