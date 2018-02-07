@@ -50,7 +50,11 @@ function towersOfHanoi(startStack, endStack) {
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that inout is valid, and move is legal
     moves++;
     movePiece(startStack, endStack);
-    checkForWin(startStack, endStack);
+    if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
+      if (checkForWin(startStack, endStack)) {//only if checkForWin is true
+        console.log("Winner!");
+      }
+    }
   }
 }
 
