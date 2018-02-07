@@ -29,9 +29,8 @@ function printStacks() {
   console.log("c: " + stacks.c);
 }
 
-function movePiece() {
-  console.log('INSIDE MOVE PIECE');
-
+const movePiece=(startStack, endStack)=> {//use pop and push to move between arrays
+  stacks[endStack].push(stacks[startStack].pop());
 }
 
 function isLegal() {
@@ -48,7 +47,7 @@ function towersOfHanoi(startStack, endStack) {
   endStack = endStack.toLowerCase();
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that inout is valid, and move is legal
     moves++;
-    movePiece();
+    movePiece(startStack, endStack);
   }
 }
 
