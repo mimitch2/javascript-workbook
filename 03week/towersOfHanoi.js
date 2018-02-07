@@ -15,15 +15,17 @@ let stacks = {
 let moves = 0;// use this to track moves so we only have to check for win after 14
 
 
-const isInputValid=(startStack, endStack)=> {//set tests that user input is valid (a,b or c) and is only 1 character
-  console.log('INSIDE VALID CHECK');
-  const validInputs = /[abc]/;//regExp
-  if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){
-    return true
+const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
+  console.log('INSIDE VALID INPUTS');
+  const validInputs = /[abc]/;//valid inputs
+  if (startStack.length === 1 && endStack.length === 1){//check inputs are only 1 character
+    if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){//check that inputs are a, b or c only
+      return true
+    }
   }
 }
 
-function printStacks() {
+const printStacks=()=> {
   console.log("a: " + stacks.a);
   console.log("b: " + stacks.b);
   console.log("c: " + stacks.c);
@@ -33,7 +35,7 @@ const movePiece=(startStack, endStack)=> {//use pop and push to move between arr
   stacks[endStack].push(stacks[startStack].pop());
 }
 
-function isLegal() {
+const isLegal=()=> {
   return true
 }
 
@@ -44,11 +46,11 @@ const checkForWin=()=> {//see if last array= 4,3,2,1
   }
 }
 
-function towersOfHanoi(startStack, endStack) {
+const towersOfHanoi=(startStack, endStack)=> {
   startStack = startStack.toLowerCase();
   endStack = endStack.toLowerCase();
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that inout is valid, and move is legal
-    moves++;
+    moves++;//iterate moves on each legal move
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
       if (checkForWin(startStack, endStack)) {//only if checkForWin is true
@@ -59,7 +61,7 @@ function towersOfHanoi(startStack, endStack) {
 }
 
 
-function getPrompt() {
+const getPrompt=()=> {
   printStacks();
   rl.question('start stack: ', (startStack) => {
     rl.question('end stack: ', (endStack) => {
