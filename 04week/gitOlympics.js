@@ -1,10 +1,12 @@
 'usestrict';
 
 const printListOfOlympians=()=> {
-  const olympians = ['mike','agata', 'renee'];
+  const olympians = ['mike','agata', 'renee', 'joe', 'bill'];
 
   olympians.forEach((name) => {
-    console.log();
+    console.log(name);
   });
 
 }
+
+printListOfOlympians();
