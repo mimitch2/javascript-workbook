@@ -14,42 +14,48 @@ let stacks = {
 };
 let moves = 0;// use this to track moves so we only have to check for win after 14
 
-
-const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
-  console.log('INSIDE VALID INPUTS');
-  const validInputs = /[abc]/;//valid inputs
-  if (startStack.length === 1 && endStack.length === 1){//check inputs are only 1 character
-    if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){//check that inputs are a, b or c only
-      return true
-    }
-  }
-}
-
 const printStacks=()=> {
   console.log("a: " + stacks.a);
   console.log("b: " + stacks.b);
   console.log("c: " + stacks.c);
 }
 
+const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
+  console.log('INSIDE VALID INPUTS');
+  const validInputs = /[abc]/;//valid inputs
+  if (startStack.length === 1 && endStack.length === 1){//check that inputs are only 1 character
+    if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){//check that inputs are a, b or c only
+      return true
+    }
+  }
+}
+
 const movePiece=(startStack, endStack)=> {//use pop and push to move between arrays
   stacks[endStack].push(stacks[startStack].pop());
 }
 
-const isLegal=()=> {
-  return true
+const isLegal=(startStack, endStack)=> {
+  console.log('INSIDE LEGAL');
+  if (stacks[startStack].length !== 0){//make sure the startStack is not empty
+    if (stacks[endStack].length === 0 ||//if endStack is empty or....
+          stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//...if end's last array index is greater than start's last
+      return true
+    }
+  }else{
+    return false
+  }
 }
 
-const checkForWin=()=> {//see if last array= 4,3,2,1
-  if (stacks.c.length === 4) {
-    console.log("INSIDE WIN CHECK");
+const checkForWin=()=> {
+  if (stacks.c.length === 4) {//see if last array= 4,3,2,1
     return true
   }
 }
 
 const towersOfHanoi=(startStack, endStack)=> {
   startStack = startStack.toLowerCase();
-  endStack = endStack.toLowerCase();
-  if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that inout is valid, and move is legal
+  endStack = endStack.toLowerCase();//force inputs to lowercase
+  if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal
     moves++;//iterate moves on each legal move
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
