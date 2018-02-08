@@ -23,11 +23,46 @@ const printStacks=()=> {
 const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
   // console.log('INSIDE VALID INPUTS');
   const validInputs = /[abc]/;//valid inputs
-  if (startStack.length === 1 && endStack.length === 1){//check that inputs are only 1 character
-    if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){//check that inputs are a, b or c only
-      return true
-    }
+  if (startStack.length === 1 && endStack.length === 1 &&
+      startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){
+    return true
+  }else{
+    announceInvalid();
   }
+}
+
+const announceInvalid=(startStack, endStack)=>{
+  console.log(`Invalid Input!! Make sure you enter either a, b or c.`);
+}
+
+const isLegal=(startStack, endStack)=>{
+  if (isEmptyStart(startStack, endStack) && isBiggerThan(startStack, endStack)){
+    return true
+  }
+}
+
+const isEmptyStart=(startStack, endStack)=> {
+  if (stacks[startStack].length !== 0){
+    return true
+  }else{
+    annouceEmptyStart();
+  }
+}
+
+const annouceEmptyStart=()=>{
+  console.log(`You can't do that!!! You cannot move from an empty stack!`);
+}
+
+const isBiggerThan=(startStack, endStack)=> {
+  if (stacks[endStack].length === 0 || stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//...if end's last array index is greater than start's last
+    return true
+  }else{
+    annouceBiggerThan();
+  }
+}
+
+const annouceBiggerThan=()=>{
+  console.log(`You can't do that!!! endStack's last number must be greater that startStack's number.`);
 }
 
 const movePiece=(startStack, endStack)=> {
@@ -35,22 +70,14 @@ const movePiece=(startStack, endStack)=> {
   moves++;//iterate moves on each legal move
 }
 
-const isLegal=(startStack, endStack)=> {
-  // console.log('INSIDE LEGAL');
-  if (stacks[startStack].length !== 0){//make sure the startStack is not empty
-    if (stacks[endStack].length === 0 ||//if endStack is empty or....
-          stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//...if end's last array index is greater than start's last
-      return true
-    }
-  }else{
-    return false
+const checkForWin=(startStack, endStack)=> {
+  if (stacks.c.length === 4) {//see if last array= 4,3,2,1
+    announceWin();
   }
 }
 
-const checkForWin=()=> {
-  if (stacks.c.length === 4) {//see if last array= 4,3,2,1
-    return true
-  }
+const announceWin=(startStack, endStack)=>{
+  console.log(`WINNER with only ${moves} tries!!! Nice job!`);
 }
 
 const towersOfHanoi=(startStack, endStack)=> {
@@ -59,16 +86,8 @@ const towersOfHanoi=(startStack, endStack)=> {
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
-      if (checkForWin(startStack, endStack)) {//only if checkForWin is true
-        console.log(`WINNER with only ${moves} tries!!! Nice job!`);
-      }
+      checkForWin(startStack, endStack);
     }
-  }else if (!isInputValid(startStack, endStack)){
-    console.log(`Invalid Input!! Make sure you enter either a, b or c.`);
-  }else if (isLegal(startStack, endStack) === undefined){
-    console.log(`You can't do that!!! endStack's last number must be greater that startStack's number.`);
-  }else if (isLegal(startStack, endStack) === false){
-    console.log(`You can't do that!!! You cannot move from an empty stack!`);
   }
 }
 
