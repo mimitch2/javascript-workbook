@@ -21,7 +21,7 @@ const printStacks=()=> {
 }
 
 const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
-  console.log('INSIDE VALID INPUTS');
+  // console.log('INSIDE VALID INPUTS');
   const validInputs = /[abc]/;//valid inputs
   if (startStack.length === 1 && endStack.length === 1){//check that inputs are only 1 character
     if (startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){//check that inputs are a, b or c only
@@ -30,12 +30,13 @@ const isInputValid=(startStack, endStack)=> {//set tests that user input is vali
   }
 }
 
-const movePiece=(startStack, endStack)=> {//use pop and push to move between arrays
-  stacks[endStack].push(stacks[startStack].pop());
+const movePiece=(startStack, endStack)=> {
+  stacks[endStack].push(stacks[startStack].pop());//use pop and push to move between arrays
+  moves++;//iterate moves on each legal move
 }
 
 const isLegal=(startStack, endStack)=> {
-  console.log('INSIDE LEGAL');
+  // console.log('INSIDE LEGAL');
   if (stacks[startStack].length !== 0){//make sure the startStack is not empty
     if (stacks[endStack].length === 0 ||//if endStack is empty or....
           stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//...if end's last array index is greater than start's last
@@ -56,16 +57,20 @@ const towersOfHanoi=(startStack, endStack)=> {
   startStack = startStack.toLowerCase();
   endStack = endStack.toLowerCase();//force inputs to lowercase
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal
-    moves++;//iterate moves on each legal move
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
       if (checkForWin(startStack, endStack)) {//only if checkForWin is true
-        console.log("Winner!");
+        console.log(`WINNER with only ${moves} tries!!! Nice job!`);
       }
     }
+  }else if (!isInputValid(startStack, endStack)){
+    console.log(`Invalid Input!! Make sure you enter either a, b or c.`);
+  }else if (isLegal(startStack, endStack) === undefined){
+    console.log(`You can't do that!!! endStack's last number must be greater that startStack's number.`);
+  }else if (isLegal(startStack, endStack) === false){
+    console.log(`You can't do that!!! You cannot move from an empty stack!`);
   }
 }
-
 
 const getPrompt=()=> {
   printStacks();
