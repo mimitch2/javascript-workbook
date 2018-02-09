@@ -34,7 +34,7 @@ const isInputValid=(startStack, endStack)=> {//set tests that user input is vali
 }
 
 const announceInvalid=(startStack, endStack)=>{//only if isInputValid fails
-  console.log(`Invalid Input!! Make sure you enter either a, b or c.`);
+  console.log(`\n\u{274C}  Invalid Input!! Make sure you enter either a, b or c.\n`);
 }
 
 const isLegal=(startStack, endStack)=>{
@@ -47,7 +47,7 @@ const isEmptyStart=(startStack, endStack)=> {
   if (stacks[startStack].length !== 0){//checks that startStack is not empty
     return true
   }else{//if it is empty throw error
-    console.log(`\n\u{26a0} You can't do that!!! You cannot move from an empty stack!\n`);
+    console.log(`\n\u{274C}  You can't do that!!! You cannot move from an empty stack!\n`);
   }
 }
 
@@ -56,7 +56,7 @@ const isBiggerThan=(startStack, endStack)=> {
     //if endStack is emptey OR if end's last array item is greater than start's last
     return true
   }else{//if false throw error
-    console.log(`\n\u{26a0} You can't do that!!! endStack's last number must be greater that startStack's number.\n`);
+    console.log(`\n\u{274C}  You can't do that!!! endStack's last number must be greater that startStack's number.\n`);
   }
 }
 
@@ -88,7 +88,7 @@ const towersOfHanoi=(startStack, endStack)=> {
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
       if (checkForWin(startStack, endStack)){
         printStacks();//show the winning board first
-        console.log(`\n\u{1F3C6}  WINNER with only ${moves} tries!!! Nice job! \n \u{2193} NEW GAME`);
+        console.log(`\n\u{1F3C6}  WINNER with only ${moves} tries! \n \u{2B07} NEW GAME`);
         resetGame();//reset for new game
       }
     }
