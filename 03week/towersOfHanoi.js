@@ -13,10 +13,10 @@ let stacks = {
   c: []
 };
 
-let moves = 0;// use this to track moves so we only have to check for win after 14
+let moves = 0;//to track moves so we only have to check for win after 14
 
 const printStacks=()=> {
-  console.log(`Moves: ${moves}`);//log moves for every turn, make font green
+  console.log(`Moves: ${moves}`);//log moves for every turn
   console.log("a: " + stacks.a);
   console.log("b: " + stacks.b);
   console.log("c: " + stacks.c);
@@ -24,8 +24,9 @@ const printStacks=()=> {
 
 const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
   const validInputs = /[abc]/;//valid inputs
-  if (startStack.length === 1 && endStack.length === 1 &&//checks inputs are only 1 character, and match a,b or c
+  if (startStack.length === 1 && endStack.length === 1 &&
       startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){
+        //checks inputs are only 1 character, and match a,b or c
     return true
   }else{//if false, call announceInvalid
     announceInvalid();
@@ -37,7 +38,7 @@ const announceInvalid=(startStack, endStack)=>{//only if isInputValid fails
 }
 
 const isLegal=(startStack, endStack)=>{
-  if (isEmptyStart(startStack, endStack) && isBiggerThan(startStack, endStack)){//calls both functions to determin both are true
+  if (isEmptyStart(startStack, endStack) && isBiggerThan(startStack, endStack)){//calls both functions to determine both are true
     return true
   }
 }
@@ -45,15 +46,16 @@ const isLegal=(startStack, endStack)=>{
 const isEmptyStart=(startStack, endStack)=> {
   if (stacks[startStack].length !== 0){//checks that startStack is not empty
     return true
-  }else{//if it is empty, call announceEmptyStart
+  }else{//if it is empty throw error
     console.log(`\n\u{26a0} You can't do that!!! You cannot move from an empty stack!\n`);
   }
 }
 
 const isBiggerThan=(startStack, endStack)=> {
-  if (stacks[endStack].length === 0 || stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//if endStack is empte OR if end's last array index is greater than start's last
+  if (stacks[endStack].length === 0 || stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){
+    //if endStack is emptey OR if end's last array item is greater than start's last
     return true
-  }else{//if false call annouceBiggerThan
+  }else{//if false throw error
     console.log(`\n\u{26a0} You can't do that!!! endStack's last number must be greater that startStack's number.\n`);
   }
 }
@@ -69,7 +71,7 @@ const checkForWin=(startStack, endStack)=> {
   }
 }
 
-const resetGame=()=> {
+const resetGame=()=> {//reset board and moves
   stacks = {
     a: [4,3,2,1],
     b: [],
@@ -81,13 +83,13 @@ const resetGame=()=> {
 const towersOfHanoi=(startStack, endStack)=> {
   startStack = startStack.toLowerCase();
   endStack = endStack.toLowerCase();//force inputs to lowercase
-  if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal
+  if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal, if so call movePiece
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
       if (checkForWin(startStack, endStack)){
-        printStacks();
+        printStacks();//show the winning board first
         console.log(`\n\u{1F3C6}  WINNER with only ${moves} tries!!! Nice job! \n \u{2193} NEW GAME`);
-        resetGame();
+        resetGame();//reset for new game
       }
     }
   }
