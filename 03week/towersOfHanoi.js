@@ -12,57 +12,50 @@ let stacks = {
   b: [],
   c: []
 };
+
 let moves = 0;// use this to track moves so we only have to check for win after 14
 
 const printStacks=()=> {
+  console.log(`Moves: ${moves}`);//log moves for every turn, make font green
   console.log("a: " + stacks.a);
   console.log("b: " + stacks.b);
   console.log("c: " + stacks.c);
 }
 
 const isInputValid=(startStack, endStack)=> {//set tests that user input is valid
-  // console.log('INSIDE VALID INPUTS');
   const validInputs = /[abc]/;//valid inputs
-  if (startStack.length === 1 && endStack.length === 1 &&
+  if (startStack.length === 1 && endStack.length === 1 &&//checks inputs are only 1 character, and match a,b or c
       startStack.search(validInputs) === 0 && endStack.search(validInputs) === 0){
     return true
-  }else{
+  }else{//if false, call announceInvalid
     announceInvalid();
   }
 }
 
-const announceInvalid=(startStack, endStack)=>{
+const announceInvalid=(startStack, endStack)=>{//only if isInputValid fails
   console.log(`Invalid Input!! Make sure you enter either a, b or c.`);
 }
 
 const isLegal=(startStack, endStack)=>{
-  if (isEmptyStart(startStack, endStack) && isBiggerThan(startStack, endStack)){
+  if (isEmptyStart(startStack, endStack) && isBiggerThan(startStack, endStack)){//calls both functions to determin both are true
     return true
   }
 }
 
 const isEmptyStart=(startStack, endStack)=> {
-  if (stacks[startStack].length !== 0){
+  if (stacks[startStack].length !== 0){//checks that startStack is not empty
     return true
-  }else{
-    annouceEmptyStart();
+  }else{//if it is empty, call announceEmptyStart
+    console.log(`\n\u{26a0} You can't do that!!! You cannot move from an empty stack!\n`);
   }
-}
-
-const annouceEmptyStart=()=>{
-  console.log(`You can't do that!!! You cannot move from an empty stack!`);
 }
 
 const isBiggerThan=(startStack, endStack)=> {
-  if (stacks[endStack].length === 0 || stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//...if end's last array index is greater than start's last
+  if (stacks[endStack].length === 0 || stacks[endStack].slice(-1) > stacks[startStack].slice(-1)){//if endStack is empte OR if end's last array index is greater than start's last
     return true
-  }else{
-    annouceBiggerThan();
+  }else{//if false call annouceBiggerThan
+    console.log(`\n\u{26a0} You can't do that!!! endStack's last number must be greater that startStack's number.\n`);
   }
-}
-
-const annouceBiggerThan=()=>{
-  console.log(`You can't do that!!! endStack's last number must be greater that startStack's number.`);
 }
 
 const movePiece=(startStack, endStack)=> {
@@ -71,13 +64,18 @@ const movePiece=(startStack, endStack)=> {
 }
 
 const checkForWin=(startStack, endStack)=> {
-  if (stacks.c.length === 4) {//see if last array= 4,3,2,1
-    announceWin();
+  if (stacks.c.length === 4) {//see if last stack= 4,3,2,1
+    return true
   }
 }
 
-const announceWin=(startStack, endStack)=>{
-  console.log(`WINNER with only ${moves} tries!!! Nice job!`);
+const resetGame=()=> {
+  stacks = {
+    a: [4,3,2,1],
+    b: [],
+    c: []
+  };
+  moves = 0;
 }
 
 const towersOfHanoi=(startStack, endStack)=> {
@@ -86,7 +84,11 @@ const towersOfHanoi=(startStack, endStack)=> {
   if (isInputValid(startStack, endStack) && isLegal(startStack, endStack)) {//check that input is valid, and move is legal
     movePiece(startStack, endStack);
     if (moves>13) {//only check for win starting at 14 moves since 15 is minimum to win
-      checkForWin(startStack, endStack);
+      if (checkForWin(startStack, endStack)){
+        printStacks();
+        console.log(`\n\u{1F3C6}  WINNER with only ${moves} tries!!! Nice job! \n \u{2193} NEW GAME`);
+        resetGame();
+      }
     }
   }
 }
@@ -103,7 +105,82 @@ const getPrompt=()=> {
 
 getPrompt();
 
+
+
+
 // <*************************** Tests ************************>
+
+if (typeof describe === 'function') {
+
+  describe('#towersOfHanoi()', () => {
+    it('prevent invalid inputs', () => {
+      towersOfHanoi('34', '  L');
+      assert.deepEqual(stacks.a, [4,3,2,1]);
+      assert.deepEqual(stacks.b, []);
+      assert.deepEqual(stacks.c, []);
+    });
+    it('change input to lowercase', () => {
+      towersOfHanoi('A', 'B');
+      assert.deepEqual(stacks.a, [4,3,2]);
+      assert.deepEqual(stacks.b, [1]);
+      assert.deepEqual(stacks.c, []);
+    });
+    it('should move from one stack to another empty stack', () => {
+      stacks = {
+        a: [4,3,2,1],
+        b: [],
+        c: []
+      };
+      towersOfHanoi('a', 'b');
+      assert.deepEqual(stacks.a, [4,3,2]);
+      assert.deepEqual(stacks.b, [1]);
+    });
+    it('should prevent moving to a stack with a larger number', () => {
+      towersOfHanoi('a', 'b');
+      assert.deepEqual(stacks.a, [4,3,2]);
+      assert.deepEqual(stacks.b, [1]);
+      assert.deepEqual(stacks.c, []);
+    });
+    it('should prevent moving from an empty stack', () => {
+      towersOfHanoi('c', 'b');
+      assert.deepEqual(stacks.a, [4,3,2]);
+      assert.deepEqual(stacks.b, [1]);
+      assert.deepEqual(stacks.c, []);
+    });
+    it('should allow moving to a stack with a larger number', () => {
+      towersOfHanoi('b', 'a');
+      assert.deepEqual(stacks.a, [4,3,2,1]);
+      assert.deepEqual(stacks.b, []);
+      assert.deepEqual(stacks.c, []);
+    });
+    it('should dectect a win', () => {
+      stacks = {
+        a: [],
+        b: [1],
+        c: [4,3,2]
+      };
+      towersOfHanoi('b', 'c');
+      assert.deepEqual(stacks.a, []);
+      assert.deepEqual(stacks.b, []);
+      assert.deepEqual(stacks.c, [4,3,2,1]);
+    });
+    it('should reset game', () => {
+      stacks = {
+        a: [2],
+        b: [1],
+        c: [4,3]
+      };
+      moves = 5;
+      resetGame();
+      assert.deepEqual(stacks.a, [4,3,2,1]);
+      assert.deepEqual(stacks.b, []);
+      assert.deepEqual(stacks.c, []);
+      assert.equal(moves, 0);
+    });
+  });
+}
+
+
 
 //
 // Test 1: It should test to make sure the start stack has an avaialbe piece to grab. Example:
