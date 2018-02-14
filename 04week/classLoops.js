@@ -51,6 +51,13 @@ const currencies=(obj2)=> {
     return console.log(data + ' ' + obj2.rates[data]);
   });
 
-
 }
 currencies(latestExchangeRate);
+
+
+
+const multiplyByTen=(obj3)=>{
+
+  return console.log(Object.keys());
+
+}
