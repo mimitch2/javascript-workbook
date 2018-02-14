@@ -30,7 +30,6 @@ const rl = readline.createInterface({
 // -return error that the word has no vowels
 //<****************************Begin code*********************************>
 
-let vowelIndex;
 
 const isInputValid=(word)=> {
   if (word.search(/\s/g) === -1 && word.search(/\d+/g) === -1) {//check there are no white spaces between letters on numbers in string
@@ -38,16 +37,13 @@ const isInputValid=(word)=> {
   }
 }
 
-const findFirstVowel=(word)=> {
-  vowelIndex = word.search(/[aeiou]/)//store index postion of first vowel
-}
-
 const pigLatin=(word)=> {
   word = word.toLowerCase().trim();//force input to lowercase
   if (isInputValid(word) !== true){
     return 'Invalid input! Only use a single word with no spaces.'
   }else{
-    findFirstVowel(word);
+    // findFirstVowel(word);
+    const vowelIndex = word.search(/[aeiou]/)//store index postion of first vowel
     if (vowelIndex === 0) {// check if first letter is a vowel
       return `${word}yay`;//if so, just return the full word + yay
     }else{//else move and analyze where the first vowel is
