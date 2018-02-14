@@ -40,10 +40,17 @@ const latestExchangeRate = {
   multiplyByTen: (num) => num * 10
 }
 
-const baseDate=()=> {
-
-  return latestExchangeRate.base + ' ' + latestExchangeRate.date
-  // return latestExchangeRate.date
+const baseDate=(obj)=> {
+  return obj.base + ' ' + obj.date
 }
 
-console.log(baseDate());
+console.log(baseDate(latestExchangeRate));
+
+const currencies=(obj2)=> {
+  Object.keys(obj2.rates).forEach((data) =>{
+    return console.log(data + ' ' + obj2.rates[data]);
+  });
+
+
+}
+currencies(latestExchangeRate);
