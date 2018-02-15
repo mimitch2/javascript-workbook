@@ -41,14 +41,14 @@ const latestExchangeRate = {
 }
 
 const baseDate=(obj)=> {
-  return obj.base + ' ' + obj.date
+  return `${obj.base} ${obj.date}`
 }
 
 console.log(baseDate(latestExchangeRate));
 
 const currencies=(obj2)=> {
   Object.keys(obj2.rates).forEach((data) =>{
-    return console.log(data + ' ' + obj2.rates[data]);
+    return console.log(`${data} ${obj2.rates[data]}`);
   });
 
 }
