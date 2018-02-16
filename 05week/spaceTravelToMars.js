@@ -27,14 +27,6 @@ class CrewMember {
   enterShip(shipName){
     shipName.crew.push(this)
     this.ship = shipName;
-    // console.log(shipName.crew[0].job);
-
-    // console.log('inside EnterShip');
-    // console.log(this.name);
-    // console.log(this.ship.name);
-    // console.log(shipName.crew);
-    // console.log(shipName.crew.length);
-    // console.log(typeof shipName.crew);
   }
 }
 
@@ -49,27 +41,40 @@ class Ship {
 
   }
   missionStatement(){
-    let jobLookup = jobTypes[this.crew[0].job]
-    console.log(this.crew[0].ship.type);
-    console.log(jobLookup);
-    // console.log(this.crew[0].job);
-    // console.log(this.type);
-    if (this.crew[0].ship.type === jobTypes[this.crew[0].job]){
-      return this.ability
-    }else{
-      return "Can't perform a mission yet."
+    if (this.crew.length !== 0) {
+      if (this.crew[this.crew.length -1].ship.type === jobTypes[this.crew[this.crew.length -1].job] ||
+          this.crew[this.crew.length -1].job === 'programmer'){
+        console.log(this.ability);
+        return this.ability;
+      }
     }
+    console.log("Can't perform a mission yet.");
+    return "Can't perform a mission yet.";
+
   }
 }
-//
+
 let crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
-// // let crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+let crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+let crewMember3 = new CrewMember('mechanic dude', 'mechanic', 'stuff');
+let crewMember4 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
+
+
 let mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
-// // let hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
-//
-crewMember1.enterShip(mav)
-// // // crewMember2.enterShip(hermes)
+let hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
+
+crewMember1.enterShip(mav);
 mav.missionStatement();
+crewMember2.enterShip(hermes);
+hermes.missionStatement();
+crewMember3.enterShip(mav);
+mav.missionStatement();
+crewMember4.enterShip(mav);
+mav.missionStatement()
+crewMember4.enterShip(hermes);
+hermes.missionStatement();
+;
+
 
 //tests
 if (typeof describe === 'function'){
@@ -106,14 +111,32 @@ if (typeof describe === 'function'){
       let crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
       let hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
       let crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+      let crewMember3 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
       assert.equal(mav.missionStatement(), "Can't perform a mission yet.");
       assert.equal(hermes.missionStatement(), "Can't perform a mission yet.");
 
       crewMember1.enterShip(mav);
       assert.equal(mav.missionStatement(), "Ascend into low orbit");
-
       crewMember2.enterShip(hermes);
       assert.equal(hermes.missionStatement(), "Interplanetary Space Travel");
+
+      crewMember3.enterShip(mav);//check that programmer can go on any ship
+      assert.equal(mav.missionStatement(), "Ascend into low orbit");
+      crewMember3.enterShip(hermes);//check that programmer can go on any ship
+      assert.equal(hermes.missionStatement(), "Interplanetary Space Travel");
+
+    });
+
+    it('refuse to return a mission statement if crew is wrong', function(){
+      let mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
+      let crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
+      let hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
+      let crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+      crewMember1.enterShip(hermes);//if crew is wrong, throw error
+      assert.equal(hermes.missionStatement(), "Can't perform a mission yet.");
+
+      crewMember2.enterShip(mav);//if crew is wrong, throw error
+      assert.equal(mav.missionStatement(), "Can't perform a mission yet.");
     });
   });
 }
