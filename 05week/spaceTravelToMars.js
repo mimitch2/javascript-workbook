@@ -9,8 +9,6 @@ let jobTypes = {
   programmer: 'Any Ship!'
 };
 
-// Your code here
-
 // we need to create 2 classes, CrewMember and Ship
 // CrewMember will have 4 items, name, job, specialSkill and Ship
 // Ship will have name, type, ability and an empty array called crew for storing crew members
@@ -25,12 +23,10 @@ class CrewMember {
     this.ship = ship;
   }
   enterShip(shipName){
-    shipName.crew.push(this)
-    this.ship = shipName;
+    shipName.crew.splice(0, 1, this)//remove anything in array, then add new crew
+    this.ship = shipName;//assign a ship to the crew member
   }
 }
-
-
 
 class Ship {
   constructor (name, type, ability, crew) {
@@ -41,13 +37,13 @@ class Ship {
 
   }
   missionStatement(){
-    if (this.crew.length !== 0) {
-      if (this.crew[this.crew.length -1].ship.type === jobTypes[this.crew[this.crew.length -1].job] ||
-          this.crew[this.crew.length -1].job === 'programmer'){
+    if (this.crew.length === 1) {//make sure there is 1 crew onboard
+      if (this.crew[0].ship.type === jobTypes[this.crew[0].job] ||//make sure crew matches ship ability
+          this.crew[0].job === 'programmer'){//if programmer, can run any ship
         console.log(this.ability);
-        return this.ability;
+        return this.ability;//return the ship's ability
       }
-    }
+    }//else log error
     console.log("Can't perform a mission yet.");
     return "Can't perform a mission yet.";
 
