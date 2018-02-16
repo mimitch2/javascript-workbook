@@ -10,7 +10,7 @@ const persons = {
 };
 
 const ForLoopFunction=()=> {
-  for (var i = 0; i < carsInReverse.length; i++) {
+  for (let i = 0; i < carsInReverse.length; i++) {
     console.log(carsInReverse[i]);
   }
 }
@@ -26,7 +26,7 @@ const forInFunction=()=> {
 forInFunction();
 
 const forInIfFunction=()=> {
-  // for (let key in persons) {
+  // for (let key in persons) {//I was unclear about what to do here??????
   if (persons.hasOwnProperty('birthDate')) {
     console.log(persons['birthDate']);
   }else{
