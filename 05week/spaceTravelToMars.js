@@ -28,48 +28,45 @@ class CrewMember {
   }
 }
 
+
 class Ship {
   constructor (name, type, ability, crew) {
     this.name = name;
     this.type = type;
     this.ability =  ability;
     this.crew = [];
-
   }
   missionStatement(){
-    if (this.crew.length === 1) {//make sure there is 1 crew member onboard
-      if (this.crew[0].ship.type === jobTypes[this.crew[0].job] ||//make sure crew matches ship ability
+    if (this.crew.length === 1) {//make sure there is only 1 crew member onboard
+      if (this.crew[0].ship.type === jobTypes[this.crew[0].job] ||//make sure crew matches ship ability OR...
           this.crew[0].job === 'programmer'){//if programmer, can run any ship
-        console.log(this.ability);
         return this.ability;//return the ship's ability
       }
     }
-    console.log("Can't perform a mission yet.");
     return "Can't perform a mission yet.";//else return error
-
   }
 }
 
-const crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
-const crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
-const crewMember3 = new CrewMember('mechanic dude', 'mechanic', 'stuff');
-const crewMember4 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
+// const crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
+// const crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+// const crewMember3 = new CrewMember('mechanic dude', 'mechanic', 'stuff');
+// const crewMember4 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
+//
+//
+// const mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
+// const hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
+//
+// crewMember1.enterShip(mav);
+// console.log(mav.missionStatement());
+// crewMember2.enterShip(hermes);
+// console.log(hermes.missionStatement());
+// crewMember3.enterShip(mav);
+// console.log(mav.missionStatement());
+// crewMember4.enterShip(mav);
+// console.log(mav.missionStatement());
+// crewMember4.enterShip(hermes);
+// console.log(hermes.missionStatement());
 
-
-const mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
-const hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
-
-crewMember1.enterShip(mav);
-mav.missionStatement();
-crewMember2.enterShip(hermes);
-hermes.missionStatement();
-crewMember3.enterShip(mav);
-mav.missionStatement();
-crewMember4.enterShip(mav);
-mav.missionStatement()
-crewMember4.enterShip(hermes);
-hermes.missionStatement();
-;
 
 
 //tests
@@ -110,11 +107,12 @@ if (typeof describe === 'function'){
       const crewMember3 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
       assert.equal(mav.missionStatement(), "Can't perform a mission yet.");
       assert.equal(hermes.missionStatement(), "Can't perform a mission yet.");
-
       crewMember1.enterShip(mav);
       assert.equal(mav.missionStatement(), "Ascend into low orbit");
       crewMember2.enterShip(hermes);
       assert.equal(hermes.missionStatement(), "Interplanetary Space Travel");
+
+// new tests below
 
       crewMember3.enterShip(mav);//check that programmer can go on any ship
       assert.equal(mav.missionStatement(), "Ascend into low orbit");
@@ -123,7 +121,7 @@ if (typeof describe === 'function'){
 
     });
 
-    it('refuse to return a mission statement if crew is wrong', function(){//new tests
+    it('refuse to return a mission statement if crew is wrong', function(){
       const mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
       const crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
       const hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
