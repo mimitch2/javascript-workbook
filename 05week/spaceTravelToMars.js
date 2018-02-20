@@ -28,7 +28,6 @@ class CrewMember {
   }
 }
 
-
 class Ship {
   constructor (name, type, ability, crew) {
     this.name = name;
@@ -47,25 +46,25 @@ class Ship {
   }
 }
 
-// const crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
-// const crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
-// const crewMember3 = new CrewMember('mechanic dude', 'mechanic', 'stuff');
-// const crewMember4 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
-//
-//
-// const mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
-// const hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
-//
-// crewMember1.enterShip(mav);
-// console.log(mav.missionStatement());
-// crewMember2.enterShip(hermes);
-// console.log(hermes.missionStatement());
-// crewMember3.enterShip(mav);
-// console.log(mav.missionStatement());
-// crewMember4.enterShip(mav);
-// console.log(mav.missionStatement());
-// crewMember4.enterShip(hermes);
-// console.log(hermes.missionStatement());
+const crewMember1 = new CrewMember('Rick Martinez', 'pilot', 'chemistry');
+const crewMember2 = new CrewMember('Commander Lewis', 'commander', 'geology');
+const crewMember3 = new CrewMember('mechanic dude', 'mechanic', 'stuff');
+const crewMember4 = new CrewMember('Programmer Mike', 'programmer', 'javascript');
+
+
+const mav = new Ship('Mars Ascent Vehicle', 'MAV', 'Ascend into low orbit');
+const hermes = new Ship('Hermes', 'Main Ship', 'Interplanetary Space Travel');
+
+crewMember1.enterShip(mav);
+console.log(mav.missionStatement());
+crewMember2.enterShip(hermes);
+console.log(hermes.missionStatement());
+crewMember3.enterShip(mav);
+console.log(mav.missionStatement());
+crewMember4.enterShip(mav);
+console.log(mav.missionStatement());
+crewMember4.enterShip(hermes);
+console.log(hermes.missionStatement());
 
 
 
