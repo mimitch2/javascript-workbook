@@ -24,9 +24,9 @@ they are pushing checker in as apposed to null
 
 */
 
-const black = new Checker ('B');
+const black = new Checker('B');
 const red = new Checker('R');
-let playerTurn = black;// to track player turn
+let playerTurn = black; // to track player turn
 
 
 // console.log(playerTurn);
@@ -41,44 +41,47 @@ function Checker(symbol) {
 function Board() {
   this.grid = [];
   // creates an 8x8 array, filled with null values
-  this.createGrid = function() {
+
+
+  this.createGrid =()=> {
     console.log('3 --- inside createGrid method which creates the board array(s)');
     // loop to create the 8 rows
     for (let row = 0; row < 8; row++) {
-      this.grid[row] = [];// does this just build start board??? FIXME
+      this.grid[row] = []; // does this just build start board??? FIXME
       // push in 8 columns of nulls
       for (let column = 0; column < 8; column++) {
-        this.grid[row].push('|');// does this just build start board??? FIXME
+        this.grid[row].push(' '); // does this just build start board??? FIXME
       }
     }
 
-    this.fillBoard = function() {
+
+    this.fillBoard =()=> {
       console.log('inside fillboard');
 
-      for (let row = 0; row < 3; row+=2) {
-        for (let b = 0; b < this.grid.length; b+=2) {
+      for (let row = 0; row < 3; row += 2) {
+        for (let b = 0; b < this.grid.length; b += 2) {
           this.grid[row].splice(b, 1, black.symbol)
         }
       }
-      for (let b = 1; b < this.grid.length; b+=2) {
+      for (let b = 1; b < this.grid.length; b += 2) {
         this.grid[1].splice(b, 1, black.symbol)
       }
-      for (let row = 5; row < this.grid.length; row+=2) {
-        for (let r = 1; r < this.grid.length; r+=2) {
+      for (let row = 5; row < this.grid.length; row += 2) {
+        for (let r = 1; r < this.grid.length; r += 2) {
           this.grid[row].splice(r, 1, red.symbol)
         }
       }
-      for (let r = 0; r < this.grid.length; r+=2) {
+      for (let r = 0; r < 8; r += 2) {
         this.grid[6].splice(r, 1, red.symbol)
       }
-      // console.log(this.grid);
+      console.log(this.grid);
     }
 
   }
 
   // prints out the board
-  this.viewGrid = function() {
-        // add our column numbers
+  this.viewGrid =()=> {
+    // add our column numbers
     console.log('4 --- inside viewGrid method which prints out the board')
     let string = "  0 1 2 3 4 5 6 7\n";
     for (let row = 0; row < 8; row++) {
@@ -90,7 +93,7 @@ function Board() {
         if (this.grid[row][column]) {
           // push the symbol of the check in that location into the array
           rowOfCheckers.push(this.grid[row][column].symbol);
-        }else {
+        } else {
           // just push in a blank space
           rowOfCheckers.push(' ');
         }
@@ -101,10 +104,7 @@ function Board() {
       string += "\n";
 
     }
-
     console.log(string);
-    console.log(this.grid);
-
 
   };
 
@@ -118,29 +118,28 @@ function Game() {
   console.log('1 --- inside Game class');
   this.board = new Board();
 
-  this.start = function() {
+  this.start =()=> {
     console.log('2----Inside start method');
     this.board.createGrid();
     this.board.fillBoard();
 
   };
-  this.moveChecker = function(whichPiece, toWhere) {//move the checker if legal
+  this.moveChecker =(whichPiece, toWhere)=> { //move the checker if legal
     console.log('5 --- Inside moveChecker method which alternates with viewGrid');
     //set new arrays then split original and make numbers, then push those numbers into the arrays
     parsInput(whichPiece, toWhere);
-
   }
 }
 
-const parsInput=(whichPiece, toWhere)=> {
+const parsInput =(whichPiece, toWhere) => {
   whichPiece = whichPiece.split('');
   const numberwhichPiece = [];
   toWhere = toWhere.split('');
   const numberToWhere = [];
-  whichPiece.forEach((num)=> {
+  whichPiece.forEach((num) => {
     numberwhichPiece.push(parseInt(num));
   });
-  toWhere.forEach((num2)=> {
+  toWhere.forEach((num2) => {
     numberToWhere.push(parseInt(num2));
   });
   console.log(numberwhichPiece, typeof(numberwhichPiece[0]));
@@ -150,7 +149,7 @@ const parsInput=(whichPiece, toWhere)=> {
 }
 
 function getPrompt() {
-  game.board.viewGrid();// call to print out initial board
+  game.board.viewGrid(); // call to print out initial board
   rl.question('which piece?: ', (whichPiece) => {
     rl.question('to where?: ', (toWhere) => {
       game.moveChecker(whichPiece, toWhere);
@@ -159,10 +158,8 @@ function getPrompt() {
   });
 }
 
-const game = new Game();//creates a new Game class instance
-game.start();//passed game instance to the start method inside of Game class
-
-
+const game = new Game(); //creates a new Game class instance
+game.start(); //passed game instance to the start method inside of Game class
 
 
 
@@ -184,8 +181,8 @@ if (typeof describe === 'function') {
     });
   });
 
-  describe('Game.moveChecker()', function () {
-    it('should move a checker', function () {
+  describe('Game.moveChecker()', function() {
+    it('should move a checker', function() {
       assert(!game.board.grid[4][1]);
       game.moveChecker('50', '41');
       assert(game.board.grid[4][1]);
