@@ -74,13 +74,14 @@ function Board() {
       const rowOfCheckers = [row];
       // a loop within a loop
       for (let column = 0; column < 8; column++) {
+            // console.log(rowOfCheckers);
         // if the location is "truthy" (contains a checker piece, in this case)
         if (this.grid[row][column]) {
           // push the symbol of the check in that location into the array
           rowOfCheckers.push(this.grid[row][column].symbol);
         } else {
           // just push in a blank space
-          rowOfCheckers.push(turn.symbol);
+          rowOfCheckers.push(' ');
         }
       }
       // join the rowOfCheckers array to a string, separated by a space
@@ -98,21 +99,21 @@ function Board() {
 
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
       for (let b = 0; b < this.grid.length; b += 2) {
-        this.grid[row].splice(b, 1, black.symbol)
+        this.grid[row].splice(b, 1, black)
       }
     }
     for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
-      this.grid[1].splice(b, 1, black.symbol)
+      this.grid[1].splice(b, 1, black)
     }
     for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
       for (let r = 1; r < this.grid.length; r += 2) {
-        this.grid[row].splice(r, 1, red.symbol)
+        this.grid[row].splice(r, 1, red)
       }
     }
     for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
-      this.grid[6].splice(r, 1, red.symbol)
+      this.grid[6].splice(r, 1, red)
     }
-    console.log(this.grid);
+    // console.log(this.grid);
   }
 
 }
@@ -134,9 +135,9 @@ function Game() {
     console.log('6 --- Inside moveChecker method which alternates with viewGrid');
     if (isInputValid(whichPiece, toWhere)) {
       parsInput(whichPiece, toWhere)
-      console.log('-----VALID!!');
+      console.log('!!-----VALID!!');
     } else {
-      console.log('-----IVALID INPUT!!');
+      console.log('!!-----IVALID INPUT!!');
     }
   }
 }
@@ -227,3 +228,6 @@ if (typeof describe === 'function') {
 } else {
   getPrompt();
 }
+
+
+//filter() is used in fuzzy search
