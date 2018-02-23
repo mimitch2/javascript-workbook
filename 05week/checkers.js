@@ -24,12 +24,12 @@ they are pushing checker in as apposed to null
 
 */
 
-const black = new Checker('B');
-const red = new Checker('R');
+const black = new Checker("Black", 'B');
+const red = new Checker('Red', 'R');
 let turn = red;
 const move = new Board([null, null], [null, null]);
 
-const isInputValid = (whichPiece, toWhere) => {//FIXME mixed good/bad numbers are passing and they should'nt
+const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
   if (Number(whichPiece) && Number(toWhere)) { //make sure they are numbers
     const validInputs = /[0-7]/; //valid number range
     for (var i = 0; i < 2; i++) { //check that BOTH numbers are within range by looping it twice
@@ -40,8 +40,10 @@ const isInputValid = (whichPiece, toWhere) => {//FIXME mixed good/bad numbers ar
   }
 }
 
-function Checker(symbol) {
+
+function Checker(name, symbol) {
   // Your code here
+  this.name = name;
   this.symbol = symbol;
 }
 
@@ -90,8 +92,9 @@ function Board(start, end) {
       string += "\n";
     }
 
-    console.log('Current turn = ', this.turn.symbol);
+    console.log('Current turn = ', turn.name);
     console.log(string);
+
   }
 
   this.fillBoard = () => { //FIXME need to refactor these loops, try to use turn?
@@ -116,7 +119,33 @@ function Board(start, end) {
     }
   }
 
+  this.isMoveLegal = () => {
+    // console.log("INSIDE ISLEGAL");
+    // // console.log(move.start[0]+ 1);
+    // console.log('before check turn = ', turn);
+    // console.log('turn in start postion ', this.grid[move.start[0]][move.start[1]]);
+
+    if (this.grid[move.start[0]][move.start[1]] === turn && //only can move own checker AND
+      this.grid[move.end[0]][move.end[1]] === null) { //only can move to empty spot
+      if (move.end[1] === move.start[1] + 1 || //and only move +1 column
+        move.end[1] === move.start[1] - 1) { //OR only move -1 column
+        if (turn === black && move.end[0] === move.start[0] + 1 || //back can only move +1 row
+          turn === red && move.end[0] === move.start[0] - 1) { //OR red can only move -1 row
+          return true
+        }
+      } else if (move.end[1] === move.start[1] + 2 ||
+        move.end[1] === move.start[1] - 2) {
+        if (turn === black && move.end[0] === move.start[0] + 2 ||
+          turn === red && move.end[0] === move.start[0] - 2) {
+          return true
+        }
+
+      }
+    }
+  }
+
   this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
+    console.log('-----Inside moveIt');
     this.grid[move.start[0]].splice([move.start[1]], 1, null)
     this.grid[move.end[0]].splice([move.end[1]], 1, turn)
     if (turn === red) {
@@ -124,7 +153,7 @@ function Board(start, end) {
     } else {
       turn = red;
     }
-
+    console.log('after moveIt turn = ', turn);
   }
 
 }
@@ -142,32 +171,53 @@ function Game() {
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
     console.log('6 --- Inside moveChecker method which alternates with viewGrid');
     if (isInputValid(whichPiece, toWhere)) {
-      console.log('!!-----VALID!!');
-      parsInput(whichPiece, toWhere);
-      this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
+      console.log('!!-----VALID!!'); //FIXME figure out how to break this out
+      whichPiece = whichPiece.split('');
+      const numberwhichPiece = [];
+      toWhere = toWhere.split('');
+      const numberToWhere = [];
+
+      whichPiece.forEach((num) => { //FIXME use map here??
+        numberwhichPiece.push(parseInt(num));
+      });
+      toWhere.forEach((num2) => {
+        numberToWhere.push(parseInt(num2));
+      });
+      // console.log(numberwhichPiece[0], numberToWhere[0]);
+      move.start = numberwhichPiece;
+      move.end = numberToWhere;
+      whichPiece = numberwhichPiece;
+      toWhere = numberToWhere;
+      if (this.board.isMoveLegal() === true) {
+        console.log("LEGAL MOVE");
+        this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
+      } else {
+        console.log('Illegal Move!!');
+      }
     } else {
       console.log('!!-----INVALID INPUT!!');
     }
   }
-
-  const parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
-    //set new arrays then split original and make numbers, then push those numbers into the arrays
-    whichPiece = whichPiece.split('');
-    const numberwhichPiece = [];
-    toWhere = toWhere.split('');
-    const numberToWhere = [];
-
-    whichPiece.forEach((num) => {//FIXME use map here??
-      numberwhichPiece.push(parseInt(num));
-    });
-    toWhere.forEach((num2) => {
-      numberToWhere.push(parseInt(num2));
-    });
-    // console.log(numberwhichPiece[0], numberToWhere[0]);
-    move.start = numberwhichPiece;
-    move.end = numberToWhere;
-  }
 }
+
+//   const parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
+//     //set new arrays then split original and make numbers, then push those numbers into the arrays
+//     whichPiece = whichPiece.split('');
+//     const numberwhichPiece = [];
+//     toWhere = toWhere.split('');
+//     const numberToWhere = [];
+//
+//     whichPiece.forEach((num) => {//FIXME use map here??
+//       numberwhichPiece.push(parseInt(num));
+//     });
+//     toWhere.forEach((num2) => {
+//       numberToWhere.push(parseInt(num2));
+//     });
+//     // console.log(numberwhichPiece[0], numberToWhere[0]);
+//     move.start = numberwhichPiece;
+//     move.end = numberToWhere;
+//   }
+// }
 
 
 
