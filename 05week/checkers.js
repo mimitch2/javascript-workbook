@@ -26,10 +26,10 @@ they are pushing checker in as apposed to null
 
 const black = new Checker('B');
 const red = new Checker('R');
-let turn = black;
+let turn = red;
+const move = new Board([null, null], [null, null]);
 
-
-const isInputValid = (whichPiece, toWhere) => {
+const isInputValid = (whichPiece, toWhere) => {//FIXME mixed good/bad numbers are passing and they should'nt
   if (Number(whichPiece) && Number(toWhere)) { //make sure they are numbers
     const validInputs = /[0-7]/; //valid number range
     for (var i = 0; i < 2; i++) { //check that BOTH numbers are within range by looping it twice
@@ -45,12 +45,13 @@ function Checker(symbol) {
   this.symbol = symbol;
 }
 
-function Board() {
+function Board(start, end) {
   this.grid = [];
   // creates an 8x8 array, filled with null values
+  this.start = start;
+  this.end = end;
 
-
-  this.createGrid = (turn) => {
+  this.createGrid = () => {
     this.turn = turn;
     console.log('3 --- inside createGrid method which creates the board array(s)');
     // loop to create the 8 rows
@@ -65,16 +66,15 @@ function Board() {
 
   // prints out the board
   this.viewGrid = () => {
-
-    // add our column numbers
     console.log('5 --- inside viewGrid method which prints out the board')
+    // console.log(this.grid);
+    // add our column numbers
     let string = "  0 1 2 3 4 5 6 7\n";
     for (let row = 0; row < 8; row++) {
       // we start with our row number in our array
       const rowOfCheckers = [row];
       // a loop within a loop
       for (let column = 0; column < 8; column++) {
-            // console.log(rowOfCheckers);
         // if the location is "truthy" (contains a checker piece, in this case)
         if (this.grid[row][column]) {
           // push the symbol of the check in that location into the array
@@ -96,7 +96,8 @@ function Board() {
 
   this.fillBoard = () => { //FIXME need to refactor these loops, try to use turn?
     console.log('4-----inside fillBoard');
-
+    // console.log(move);
+    // console.log(move.start[0]);
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
       for (let b = 0; b < this.grid.length; b += 2) {
         this.grid[row].splice(b, 1, black)
@@ -113,13 +114,21 @@ function Board() {
     for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
       this.grid[6].splice(r, 1, red)
     }
-    // console.log(this.grid);
+  }
+
+  this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
+    this.grid[move.start[0]].splice([move.start[1]], 1, null)
+    this.grid[move.end[0]].splice([move.end[1]], 1, turn)
+    if (turn === red) {
+      turn = black;
+    } else {
+      turn = red;
+    }
+
   }
 
 }
 
-
-//***********this is called first*************
 function Game() {
 
   console.log('1 --- inside Game class');
@@ -127,50 +136,38 @@ function Game() {
 
   this.start = () => {
     console.log('2----Inside start method');
-    this.board.createGrid(turn);
+    this.board.createGrid();
     this.board.fillBoard();
-
   };
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
     console.log('6 --- Inside moveChecker method which alternates with viewGrid');
     if (isInputValid(whichPiece, toWhere)) {
-      parsInput(whichPiece, toWhere)
       console.log('!!-----VALID!!');
+      parsInput(whichPiece, toWhere);
+      this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
     } else {
-      console.log('!!-----IVALID INPUT!!');
+      console.log('!!-----INVALID INPUT!!');
     }
   }
+
+  const parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
+    //set new arrays then split original and make numbers, then push those numbers into the arrays
+    whichPiece = whichPiece.split('');
+    const numberwhichPiece = [];
+    toWhere = toWhere.split('');
+    const numberToWhere = [];
+
+    whichPiece.forEach((num) => {//FIXME use map here??
+      numberwhichPiece.push(parseInt(num));
+    });
+    toWhere.forEach((num2) => {
+      numberToWhere.push(parseInt(num2));
+    });
+    // console.log(numberwhichPiece[0], numberToWhere[0]);
+    move.start = numberwhichPiece;
+    move.end = numberToWhere;
+  }
 }
-
-
-
-const parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
-//set new arrays then split original and make numbers, then push those numbers into the arrays
-  whichPiece = whichPiece.split('');
-  const numberwhichPiece = [];
-  toWhere = toWhere.split('');
-  const numberToWhere = [];
-
-  whichPiece.forEach((num) => {
-    numberwhichPiece.push(parseInt(num));
-  });
-  toWhere.forEach((num2) => {
-    numberToWhere.push(parseInt(num2));
-  });
-  console.log(numberwhichPiece, typeof(numberwhichPiece[0]));
-  console.log(numberToWhere, typeof(numberToWhere[0]));
-}
-
-
-// Game {
-//   board:
-//    Board {
-//      grid: [],
-//      createGrid: [Function],
-//      viewGrid: [Function],
-//      fillBoard: [Function] },
-//   start: [Function],
-//   moveChecker: [Function] }
 
 
 
@@ -228,6 +225,5 @@ if (typeof describe === 'function') {
 } else {
   getPrompt();
 }
-
 
 //filter() is used in fuzzy search
