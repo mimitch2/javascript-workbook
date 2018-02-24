@@ -27,7 +27,7 @@ they are pushing checker in as apposed to null
 const black = new Checker("Black", 'B');
 const red = new Checker('Red', 'R');
 let turn = red;
-const move = new Board([null, null], [null, null]);
+const move = new Board([null, null], [null, null]);//create Board instance that stores start and end postions
 
 
 const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
@@ -54,7 +54,6 @@ function Board(start, end) {
   this.end = end;
 
   this.createGrid = () => {// creates an 8x8 array, filled with null values
-    this.turn = turn;
     // console.log('3 --- inside createGrid method which creates the board array(s)');
     for (let row = 0; row < 8; row++) {  // loop to create the 8 rows
       this.grid[row] = [];
@@ -66,7 +65,6 @@ function Board(start, end) {
 
   this.viewGrid = () => {  // prints out the board
     // console.log('5 --- inside viewGrid method which prints out the board')
-
     let string = "  0 1 2 3 4 5 6 7\n";// add our column numbers
     for (let row = 0; row < 8; row++) {// we start with our row number in our array
       const rowOfCheckers = [row];
@@ -178,6 +176,7 @@ function Game() {
     this.board.createGrid();
     this.board.fillBoard();
   };
+
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
     if (isInputValid(whichPiece, toWhere)) {
       this.parsInput(whichPiece, toWhere);
@@ -192,27 +191,19 @@ function Game() {
     }
   }
 
-  this.parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
-    // console.log('!!-----VALID!!');
+  this.parsInput = (whichPiece, toWhere) => {//split and parse inputs into arays with numbers
     whichPiece = whichPiece.split('');
-    const numberwhichPiece = [];
     toWhere = toWhere.split('');
-    const numberToWhere = [];
-
-    whichPiece.forEach((num) => { //FIXME use map here??
-      numberwhichPiece.push(parseInt(num));
+    const numberwhichPiece = whichPiece.map((num)=> {
+      return parseInt(num);
     });
-    toWhere.forEach((num2) => {
-      numberToWhere.push(parseInt(num2));
+    const numberToWhere = toWhere.map((num2)=> {
+      return parseInt(num2);
     });
-    move.start = numberwhichPiece;
-    move.end = numberToWhere;
-
+    move.start = numberwhichPiece;//make move object's start the new array
+    move.end = numberToWhere;//make move object's end the new array
   }
 }
-
-
-
 
 function getPrompt() {
   game.board.viewGrid(); // call to print out initial board
