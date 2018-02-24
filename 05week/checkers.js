@@ -137,21 +137,42 @@ function Board(start, end) {
         return true
       }
     }
-  }
+  } //end legal check
 
+
+  // black jump to left = - + offset from end
+  // black jump to right = - - offset from end
   this.canItJump = () => {
-    console.log('inside jump check');
-    if (move.end[1] === move.start[1] + 2 ||//if trying to move +2 rows
-      move.end[1] === move.start[1] - 2) {//or -2 rows
-      if (turn === black && move.end[0] === move.start[0] + 2 ||//if black can only move +2 columns
-        turn === red && move.end[0] === move.start[0] - 2) {//or if red can only move -2 columns
-            
-
-
-        return true
+    if (turn === black) {
+      if (move.end[0] === move.start[0] + 2) { //if trying to move +2 rows black
+        if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump FIXME checking this twice
+          if (this.grid[move.end[0] - 1][move.end[1] - 1] !== turn &&
+            this.grid[move.end[0] - 1][move.end[1] - 1] !== null) { //check that offset piece is not black or null
+            return true
+          }
+        } else if ((move.end[1] === move.start[1] - 2)) { //or -2 columns it's a left jump FIXME checking this twice
+          if (this.grid[move.end[0] - 1][move.end[1] + 1] !== turn &&
+            this.grid[move.end[0] - 1][move.end[1] + 1] !== null) { //check that offset piece is not black or null
+            return true
+          }
+        }
+      }//end black check
+    } else if (turn === red) {
+      if (move.end[0] === move.start[0] - 2) { //if trying to move -2 rows red
+        if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump
+          if (this.grid[move.end[0] + 1][move.end[1] - 1] !== turn &&
+            this.grid[move.end[0] + 1][move.end[1] - 1] !== null) { //check that offset piece is not red or null
+            return true
+          }
+        } else if ((move.end[1] === move.start[1] - 2)) { //or -2 columns it's a left jump
+          if (this.grid[move.end[0] + 1][move.end[1] + 1] !== turn &&
+            this.grid[move.end[0] + 1][move.end[1] + 1] !== null) { //check that offset piece is not red or null
+            return true
+          }
+        }
       }
-    }
-  }
+    } //end red check
+  } //end jump check
 
   this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
     // console.log('-----Inside moveIt');
@@ -164,6 +185,7 @@ function Board(start, end) {
     }
     // console.log('after moveIt turn = ', turn);
   }
+
 } //end board class
 
 function Game() {
@@ -178,8 +200,8 @@ function Game() {
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
     // console.log('6 --- Inside moveChecker method which alternates with viewGrid');
 
-    if (isInputValid(whichPiece, toWhere)) {
-      // console.log('!!-----VALID!!'); //FIXME figure out how to break this out
+    if (isInputValid(whichPiece, toWhere)) {//FIXME figure out how to break this out tp parsInput
+      // console.log('!!-----VALID!!');
       whichPiece = whichPiece.split('');
       const numberwhichPiece = [];
       toWhere = toWhere.split('');
@@ -196,7 +218,7 @@ function Game() {
       move.end = numberToWhere;
       // whichPiece = numberwhichPiece;
       // toWhere = numberToWhere;
-      if (this.board.isMoveLegal()) {
+      if (this.board.isMoveLegal()) {//FIXME put jump check 
         console.log("LEGAL MOVE");
         this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
       } else {
