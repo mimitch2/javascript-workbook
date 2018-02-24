@@ -50,41 +50,33 @@ function Checker(name, symbol) {
 
 function Board(start, end) {
   this.grid = [];
-  // creates an 8x8 array, filled with null values
   this.start = start;
   this.end = end;
 
-  this.createGrid = () => {
+  this.createGrid = () => {// creates an 8x8 array, filled with null values
     this.turn = turn;
     // console.log('3 --- inside createGrid method which creates the board array(s)');
-    // loop to create the 8 rows
-    for (let row = 0; row < 8; row++) {
-      this.grid[row] = []; // does this just build start board??? FIXME
-      // push in 8 columns of nulls
+    for (let row = 0; row < 8; row++) {  // loop to create the 8 rows
+      this.grid[row] = [];
       for (let column = 0; column < 8; column++) {
-        this.grid[row].push(null); // does this just build start board??? FIXME
+        this.grid[row].push(null); // push in 8 columns of nulls
       }
     }
   }
 
-  // prints out the board
-  this.viewGrid = () => {
+  this.viewGrid = () => {  // prints out the board
     // console.log('5 --- inside viewGrid method which prints out the board')
-    // console.log(this.grid);
-    // add our column numbers
-    let string = "  0 1 2 3 4 5 6 7\n";
-    for (let row = 0; row < 8; row++) {
-      // we start with our row number in our array
+
+    let string = "  0 1 2 3 4 5 6 7\n";// add our column numbers
+    for (let row = 0; row < 8; row++) {// we start with our row number in our array
       const rowOfCheckers = [row];
-      // a loop within a loop
-      for (let column = 0; column < 8; column++) {
+      for (let column = 0; column < 8; column++) {  // a loop within a loop
         // if the location is "truthy" (contains a checker piece, in this case)
         if (this.grid[row][column]) {
           // push the symbol of the check in that location into the array
           rowOfCheckers.push(this.grid[row][column].symbol);
         } else {
-          // just push in a blank space
-          rowOfCheckers.push(' ');
+          rowOfCheckers.push(' '); // just push in a blank space
         }
       }
       // join the rowOfCheckers array to a string, separated by a space
@@ -99,9 +91,6 @@ function Board(start, end) {
   }
 
   this.fillBoard = () => { //FIXME need to refactor these loops, try to use turn?
-    // console.log('4-----inside fillBoard');
-    // console.log(move);
-    // console.log(move.start[0]);
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
       for (let b = 0; b < this.grid.length; b += 2) {
         this.grid[row].splice(b, 1, black)
@@ -122,9 +111,6 @@ function Board(start, end) {
 
   this.isMoveLegal = () => {
     // console.log("INSIDE ISLEGAL");
-    // // console.log(move.start[0]+ 1);
-    // console.log('before check turn = ', turn);
-    // console.log('turn in start postion ', this.grid[move.start[0]][move.start[1]]);
     if (this.grid[move.start[0]][move.start[1]] === turn && //only can move own checker AND
       this.grid[move.end[0]][move.end[1]] === null) { //only can move to empty spot
       if (move.end[1] === move.start[1] + 1 || //and only move +1 column
@@ -133,16 +119,13 @@ function Board(start, end) {
           turn === red && move.end[0] === move.start[0] - 1) { //OR red can only move -1 row
           return true
         }
-      } else if (this.canItJump()) { //check for double jump move
+      } else if (this.canItJump()) { //check for jump move FIXME should this be checked in movepiece?
         return true
       }
     }
   } //end legal check
 
-
-  // black jump to left = - + offset from end
-  // black jump to right = - - offset from end
-  this.canItJump = () => {
+  this.canItJump = () => {//FIXME refactor this
     if (turn === black) {
       if (move.end[0] === move.start[0] + 2) { //if trying to move +2 rows black
         if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump FIXME checking this twice
@@ -156,7 +139,7 @@ function Board(start, end) {
             return true
           }
         }
-      }//end black check
+      } //end black check
     } else if (turn === red) {
       if (move.end[0] === move.start[0] - 2) { //if trying to move -2 rows red
         if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump
@@ -183,9 +166,7 @@ function Board(start, end) {
     } else {
       turn = red;
     }
-    // console.log('after moveIt turn = ', turn);
   }
-
 } //end board class
 
 function Game() {
@@ -198,27 +179,9 @@ function Game() {
     this.board.fillBoard();
   };
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
-    // console.log('6 --- Inside moveChecker method which alternates with viewGrid');
-
-    if (isInputValid(whichPiece, toWhere)) {//FIXME figure out how to break this out tp parsInput
-      // console.log('!!-----VALID!!');
-      whichPiece = whichPiece.split('');
-      const numberwhichPiece = [];
-      toWhere = toWhere.split('');
-      const numberToWhere = [];
-
-      whichPiece.forEach((num) => { //FIXME use map here??
-        numberwhichPiece.push(parseInt(num));
-      });
-      toWhere.forEach((num2) => {
-        numberToWhere.push(parseInt(num2));
-      });
-      // console.log(numberwhichPiece[0], numberToWhere[0]);
-      move.start = numberwhichPiece;
-      move.end = numberToWhere;
-      // whichPiece = numberwhichPiece;
-      // toWhere = numberToWhere;
-      if (this.board.isMoveLegal()) {//FIXME put jump check 
+    if (isInputValid(whichPiece, toWhere)) {
+      this.parsInput(whichPiece, toWhere);
+      if (this.board.isMoveLegal()) { //FIXME put jump check here with condition, then call remove function?
         console.log("LEGAL MOVE");
         this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
       } else {
@@ -228,26 +191,26 @@ function Game() {
       console.log('!!-----INVALID INPUT!!');
     }
   }
+
+  this.parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
+    // console.log('!!-----VALID!!');
+    whichPiece = whichPiece.split('');
+    const numberwhichPiece = [];
+    toWhere = toWhere.split('');
+    const numberToWhere = [];
+
+    whichPiece.forEach((num) => { //FIXME use map here??
+      numberwhichPiece.push(parseInt(num));
+    });
+    toWhere.forEach((num2) => {
+      numberToWhere.push(parseInt(num2));
+    });
+    move.start = numberwhichPiece;
+    move.end = numberToWhere;
+
+  }
 }
 
-//   const parsInput = (whichPiece, toWhere) => { //FIXME can refactor this with HO function
-//     //set new arrays then split original and make numbers, then push those numbers into the arrays
-//     whichPiece = whichPiece.split('');
-//     const numberwhichPiece = [];
-//     toWhere = toWhere.split('');
-//     const numberToWhere = [];
-//
-//     whichPiece.forEach((num) => {//FIXME use map here??
-//       numberwhichPiece.push(parseInt(num));
-//     });
-//     toWhere.forEach((num2) => {
-//       numberToWhere.push(parseInt(num2));
-//     });
-//     // console.log(numberwhichPiece[0], numberToWhere[0]);
-//     move.start = numberwhichPiece;
-//     move.end = numberToWhere;
-//   }
-// }
 
 
 
