@@ -29,6 +29,7 @@ const red = new Checker('Red', 'R');
 let turn = red;
 const move = new Board([null, null], [null, null]);
 
+
 const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
   if (Number(whichPiece) && Number(toWhere)) { //make sure they are numbers
     const validInputs = /[0-7]/; //valid number range
@@ -55,7 +56,7 @@ function Board(start, end) {
 
   this.createGrid = () => {
     this.turn = turn;
-    console.log('3 --- inside createGrid method which creates the board array(s)');
+    // console.log('3 --- inside createGrid method which creates the board array(s)');
     // loop to create the 8 rows
     for (let row = 0; row < 8; row++) {
       this.grid[row] = []; // does this just build start board??? FIXME
@@ -68,7 +69,7 @@ function Board(start, end) {
 
   // prints out the board
   this.viewGrid = () => {
-    console.log('5 --- inside viewGrid method which prints out the board')
+    // console.log('5 --- inside viewGrid method which prints out the board')
     // console.log(this.grid);
     // add our column numbers
     let string = "  0 1 2 3 4 5 6 7\n";
@@ -98,7 +99,7 @@ function Board(start, end) {
   }
 
   this.fillBoard = () => { //FIXME need to refactor these loops, try to use turn?
-    console.log('4-----inside fillBoard');
+    // console.log('4-----inside fillBoard');
     // console.log(move);
     // console.log(move.start[0]);
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
@@ -124,7 +125,6 @@ function Board(start, end) {
     // // console.log(move.start[0]+ 1);
     // console.log('before check turn = ', turn);
     // console.log('turn in start postion ', this.grid[move.start[0]][move.start[1]]);
-
     if (this.grid[move.start[0]][move.start[1]] === turn && //only can move own checker AND
       this.grid[move.end[0]][move.end[1]] === null) { //only can move to empty spot
       if (move.end[1] === move.start[1] + 1 || //and only move +1 column
@@ -133,19 +133,28 @@ function Board(start, end) {
           turn === red && move.end[0] === move.start[0] - 1) { //OR red can only move -1 row
           return true
         }
-      } else if (move.end[1] === move.start[1] + 2 ||
-        move.end[1] === move.start[1] - 2) {
-        if (turn === black && move.end[0] === move.start[0] + 2 ||
-          turn === red && move.end[0] === move.start[0] - 2) {
-          return true
-        }
+      } else if (this.canItJump()) { //check for double jump move
+        return true
+      }
+    }
+  }
 
+  this.canItJump = () => {
+    console.log('inside jump check');
+    if (move.end[1] === move.start[1] + 2 ||//if trying to move +2 rows
+      move.end[1] === move.start[1] - 2) {//or -2 rows
+      if (turn === black && move.end[0] === move.start[0] + 2 ||//if black can only move +2 columns
+        turn === red && move.end[0] === move.start[0] - 2) {//or if red can only move -2 columns
+            
+
+
+        return true
       }
     }
   }
 
   this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
-    console.log('-----Inside moveIt');
+    // console.log('-----Inside moveIt');
     this.grid[move.start[0]].splice([move.start[1]], 1, null)
     this.grid[move.end[0]].splice([move.end[1]], 1, turn)
     if (turn === red) {
@@ -153,25 +162,24 @@ function Board(start, end) {
     } else {
       turn = red;
     }
-    console.log('after moveIt turn = ', turn);
+    // console.log('after moveIt turn = ', turn);
   }
-
-}
+} //end board class
 
 function Game() {
-
-  console.log('1 --- inside Game class');
+  // console.log('1 --- inside Game class');
   this.board = new Board(); //makes new instance of Board class
 
   this.start = () => {
-    console.log('2----Inside start method');
+    // console.log('2----Inside start method');
     this.board.createGrid();
     this.board.fillBoard();
   };
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
-    console.log('6 --- Inside moveChecker method which alternates with viewGrid');
+    // console.log('6 --- Inside moveChecker method which alternates with viewGrid');
+
     if (isInputValid(whichPiece, toWhere)) {
-      console.log('!!-----VALID!!'); //FIXME figure out how to break this out
+      // console.log('!!-----VALID!!'); //FIXME figure out how to break this out
       whichPiece = whichPiece.split('');
       const numberwhichPiece = [];
       toWhere = toWhere.split('');
@@ -186,9 +194,9 @@ function Game() {
       // console.log(numberwhichPiece[0], numberToWhere[0]);
       move.start = numberwhichPiece;
       move.end = numberToWhere;
-      whichPiece = numberwhichPiece;
-      toWhere = numberToWhere;
-      if (this.board.isMoveLegal() === true) {
+      // whichPiece = numberwhichPiece;
+      // toWhere = numberToWhere;
+      if (this.board.isMoveLegal()) {
         console.log("LEGAL MOVE");
         this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
       } else {
