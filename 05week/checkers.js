@@ -39,9 +39,9 @@ function Checker(name, symbol) {
   this.symbol = symbol;
 }
 
-function Board(start, end) {
+function Board(begin, end) {
   this.grid = [];
-  this.start = start;
+  this.begin = begin;
   this.end = end;
 
   this.createGrid = () => {// creates an 8x8 array, filled with null values
@@ -97,12 +97,12 @@ function Board(start, end) {
 
   this.isMoveLegal = () => {
     // console.log("INSIDE ISLEGAL");
-    if (this.grid[move.start[0]][move.start[1]] === turn && //only can move own checker AND
+    if (this.grid[move.begin[0]][move.begin[1]] === turn && //only can move own checker AND
       this.grid[move.end[0]][move.end[1]] === null) { //only can move to empty spot
-      if (move.end[1] === move.start[1] + 1 || //and only move +1 column
-        move.end[1] === move.start[1] - 1) { //OR only move -1 column
-        if (turn === black && move.end[0] === move.start[0] + 1 || //back can only move +1 row
-          turn === red && move.end[0] === move.start[0] - 1) { //OR red can only move -1 row
+      if (move.end[1] === move.begin[1] + 1 || //and only move +1 column
+        move.end[1] === move.begin[1] - 1) { //OR only move -1 column
+        if (turn === black && move.end[0] === move.begin[0] + 1 || //back can only move +1 row
+          turn === red && move.end[0] === move.begin[0] - 1) { //OR red can only move -1 row
           return true
         }
       } else if (this.canItJump()) { //check for jump move FIXME should this be checked in movepiece?
@@ -113,13 +113,13 @@ function Board(start, end) {
 
   this.canItJump = () => {//FIXME refactor this, it's WAY too long
     if (turn === black) {
-      if (move.end[0] === move.start[0] + 2) { //if trying to move +2 rows black
-        if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump FIXME checking this twice
+      if (move.end[0] === move.begin[0] + 2) { //if trying to move +2 rows black
+        if (move.end[1] === move.begin[1] + 2) { //and +2 columns it's a right jump FIXME checking this twice
           if (this.grid[move.end[0] - 1][move.end[1] - 1] !== turn &&
             this.grid[move.end[0] - 1][move.end[1] - 1] !== null) { //check that offset piece is not black or null
             return true
           }
-        } else if ((move.end[1] === move.start[1] - 2)) { //or -2 columns it's a left jump FIXME checking this twice
+        } else if ((move.end[1] === move.begin[1] - 2)) { //or -2 columns it's a left jump FIXME checking this twice
           if (this.grid[move.end[0] - 1][move.end[1] + 1] !== turn &&
             this.grid[move.end[0] - 1][move.end[1] + 1] !== null) { //check that offset piece is not black or null
             return true
@@ -127,13 +127,13 @@ function Board(start, end) {
         }
       } //end black check
     } else if (turn === red) {
-      if (move.end[0] === move.start[0] - 2) { //if trying to move -2 rows red
-        if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump
+      if (move.end[0] === move.begin[0] - 2) { //if trying to move -2 rows red
+        if (move.end[1] === move.begin[1] + 2) { //and +2 columns it's a right jump
           if (this.grid[move.end[0] + 1][move.end[1] - 1] !== turn &&
             this.grid[move.end[0] + 1][move.end[1] - 1] !== null) { //check that offset piece is not red or null
             return true
           }
-        } else if ((move.end[1] === move.start[1] - 2)) { //or -2 columns it's a left jump
+        } else if ((move.end[1] === move.begin[1] - 2)) { //or -2 columns it's a left jump
           if (this.grid[move.end[0] + 1][move.end[1] + 1] !== turn &&
             this.grid[move.end[0] + 1][move.end[1] + 1] !== null) { //check that offset piece is not red or null
             return true
@@ -145,7 +145,7 @@ function Board(start, end) {
 
   this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
     // console.log('-----Inside moveIt');
-    this.grid[move.start[0]].splice([move.start[1]], 1, null)
+    this.grid[move.begin[0]].splice([move.begin[1]], 1, null)
     this.grid[move.end[0]].splice([move.end[1]], 1, turn)
     if (turn === red) {
       turn = black;
@@ -192,7 +192,7 @@ function Game() {
     const numberToWhere = toWhere.map((num2)=> {
       return parseInt(num2);
     });
-    move.start = numberwhichPiece;//make move object's start the new array
+    move.begin = numberwhichPiece;//make move object's start the new array
     move.end = numberToWhere;//make move object's end the new array
   }
 }
