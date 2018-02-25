@@ -17,7 +17,7 @@ const rl = readline.createInterface({
 6. check for win would evaluate each players count each turn
 7. add reset fucntion to reset all variables and objects to orginial states
 */
-const black = new Checker("Black", `\u{26ab}`, 12); //FIXME can I reduce this scope????
+const black = new Checker("Black", `\u{26ab}`, 12); //FIXME can I reduce this scope???? so far no...
 const red = new Checker('Red', `\u{1F534}`, 12);
 let turn = red;
 
@@ -32,17 +32,14 @@ const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers a
   }
 }
 
-function Checker(name, symbol, count) {
+function Checker(name, symbol, count) {//name, symbol and count of each checker
   this.name = name;
   this.symbol = symbol;
   this.count = count;
 }
 
-function Board(begin, end) {
+function Board() {
   this.grid = [];
-  this.begin = begin;
-  this.end = end;
-
   this.createGrid = () => { // creates an 8x8 array, filled with null values
     for (let row = 0; row < 8; row++) { // loop to create the 8 rows
       this.grid[row] = [];
@@ -93,45 +90,48 @@ function Board(begin, end) {
       this.grid[6].splice(r, 1, red)
     }
   }
-
-
 } //end board class
 
-function Game() {
-  let blackOnBoard = 12; //start with 12 of each to track when one is removed
-  let redOnBoard = 12;
+function Game(begin, end) {
+  this.begin = begin;//numneric array of original whichPiece input
+  this.end = end;//numneric array of original toWhere input
+  this.board = new Board(); //makes new instance of Board class
 
-  this.board = new Board([null, null], [null, null]); //makes new instance of Board class
   this.start = () => {
     this.board.createGrid();
     this.board.fillBoard();
   };
 
-  this.moveChecker = (whichPiece, toWhere) => { //move the checker if legal
-    if (isInputValid(whichPiece, toWhere)) {
-      this.parsInput(whichPiece, toWhere);
-      if (this.isMoveLegal()) { //FIXME put jump check here with condition, then call remove function?
-        // console.log("LEGAL MOVE");
-        this.moveIt(); //FIXME need to get this working INSIDE moveChecker
-      } else {
+  this.moveChecker = (whichPiece, toWhere) => { //move the checker if valid and legal
+    if (isInputValid(whichPiece, toWhere)) {//check for valid inputs
+      this.parsInput(whichPiece, toWhere);//parse the inputs to numbers
+      if (this.isMoveLegal()) { //check if move is legal
+        this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null)//if legal, remove checker
+        this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn)//then splice into new postion
+        if (turn === red) {//switch turns
+          turn = black;
+        } else {
+          turn = red;
+        }
+      } else {//if illegal, don't move and throw error
         console.log('Illegal Move!!');
       }
     } else {
-      console.log('!!-----INVALID INPUT!!');
+      console.log('!!-----INVALID INPUT!!');//if invalid don't move and throw error
     }
   }
 
   this.parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
-    whichPiece = whichPiece.split('');
+    whichPiece = whichPiece.split('');//split into an array of 2 strings
     toWhere = toWhere.split('');
-    const numberwhichPiece = whichPiece.map((num) => {
+    const numberwhichPiece = whichPiece.map((num) => {//parse each array into numbers
       return parseInt(num);
     });
     const numberToWhere = toWhere.map((num2) => {
       return parseInt(num2);
     });
-    this.board.begin = numberwhichPiece; //make move object's start the new array
-    this.board.end = numberToWhere; //make move object's end the new array
+    this.board.begin = numberwhichPiece; //make board object's begin eaual to the new array
+    this.board.end = numberToWhere; //make board object's end equal to the new array
   }
 
   this.isMoveLegal = () => {
@@ -144,14 +144,13 @@ function Game() {
           return true
         }
       } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2) { //if trying to move +2 rows black
-        if (this.blackJumpRight()) {
+        if (this.blackJumpRight()) {//check for both legal jump moves
           return true
         } else if (this.blackJumpLeft()) {
           return true
         }
-
       } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2) { //if trying to move -2 rows red
-        if (this.redJumpRight()) {
+        if (this.redJumpRight()) {//check for both legal jump moves
           return true
         } else if (this.redJumpLeft()) {
           return true
@@ -160,45 +159,43 @@ function Game() {
     }
   } //end legal check
 
-  this.blackJumpRight = () => { //FIXME refactor this, it's WAY too long break out to 4 methods 1 for each jump
-    if (this.board.end[1] === this.board.begin[1] + 2) { //and +2 columns it's a right jump
+//**the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.
+
+  this.blackJumpRight = () => { //this to check JUST black jumps to the right
+    if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that offset piece is not black or null
-        this.killChecker(this.board.end[0] - 1, this.board.end[1] - 1);
-        // console.log('hitting black jump right true');
+        this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped piece is not black or null
+        this.killChecker(this.board.end[0] - 1, this.board.end[1] - 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end blackJumpRight
 
-  this.blackJumpLeft = () => { //FIXME refactor this, it's WAY too long break out to 4 methods 1 for each jump
+  this.blackJumpLeft = () => {//this to check JUST black jumps to the left
     if ((this.board.end[1] === this.board.begin[1] - 2)) { //or -2 columns it's a left jump FIXME checking this twice
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== null) { //check that offset piece is not black or null
-        this.killChecker(this.board.end[0] - 1, this.board.end[1] + 1);
-        // console.log('hitting black jump left true');
+        this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== null) { //check that jumped piece is not black or null
+        this.killChecker(this.board.end[0] - 1, this.board.end[1] + 1);//if it's niether, remove opposite player
         return true
-
       }
     }
   } //end blackJumpLeft
 
-  this.redJumpRight = () => { //FIXME refactor this, it's WAY too long break out to 4 methods 1 for each jump
+  this.redJumpRight = () => {//this to check JUST red jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //and +2 columns it's a red right jump
       if (this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== null) { //check that offset piece is not red or null
-        this.killChecker(this.board.end[0] + 1, this.board.end[1] - 1);
-        // console.log('hitting red jump right true');
+        this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== null) { //check that jumped piece is not red or null
+        this.killChecker(this.board.end[0] + 1, this.board.end[1] - 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end redJumpRight
 
-  this.redJumpLeft = () => { //FIXME refactor this, it's WAY too long break out to 4 methods 1 for each jump
+  this.redJumpLeft = () => {//this to check JUST red jumps to the left
     if ((this.board.end[1] === this.board.begin[1] - 2)) { //or -2 columns it's a left jump
-      if (this.board.grid[ /*row*/ this.board.end[0] + 1][ /*column*/ this.board.end[1] + 1] !== turn &&
-        this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== null) { //check that offset piece is not red or null
-        this.killChecker(this.board.end[0] + 1, this.board.end[1] + 1);
+      if (this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== turn &&
+        this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== null) { //check that jumped postion is not red or null
+        this.killChecker(this.board.end[0] + 1, this.board.end[1] + 1);//if it's niether, remove opposite player
         // console.log('hitting red jump left true');
         return true
       }
@@ -209,24 +206,12 @@ function Game() {
     this.board.grid[rowPosition].splice([columnPostion], 1)
     if (turn === red) {
       black.count--
+      console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`);
     } else {
       red.count--
       console.log(`${red.name} has lost a piece and only has ${red.count} checkers left!`);
     }
-
   }
-
-
-  this.moveIt = () => { //FIXME need to get this working INSIDE moveChecker
-    this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null)
-    this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn)
-    if (turn === red) {
-      turn = black;
-    } else {
-      turn = red;
-    }
-  }
-
 } //end Game class
 
 function getPrompt() {
@@ -239,7 +224,7 @@ function getPrompt() {
   });
 }
 
-const game = new Game(); //creates a new Game class instance
+const game = new Game([null, null], [null, null]); //creates a new Game class instance with begin and end constuctors
 game.start(); //passed game instance to the start method inside of Game class
 
 // Tests
