@@ -16,19 +16,12 @@ const rl = readline.createInterface({
 5. move piece, and if a jump, remove jumped B or R from array  AND reduce counter need to change string into number split
 6. check for win would evaluate each players count each turn
 7. add reset fucntion to reset all variables and objects to orginial states
-
-write moveCHecker method inside
-
-
-they are pushing checker in as apposed to null
-
 */
 
-const black = new Checker("Black", 'B');
+const black = new Checker("Black", 'B');//FIXME can I reduce this scope????
 const red = new Checker('Red', 'R');
 let turn = red;
 const move = new Board([null, null], [null, null]);//create Board instance that stores start and end postions
-
 
 const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
   if (Number(whichPiece) && Number(toWhere)) { //make sure they are numbers
@@ -41,9 +34,7 @@ const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers a
   }
 }
 
-
 function Checker(name, symbol) {
-  // Your code here
   this.name = name;
   this.symbol = symbol;
 }
@@ -54,7 +45,6 @@ function Board(start, end) {
   this.end = end;
 
   this.createGrid = () => {// creates an 8x8 array, filled with null values
-    // console.log('3 --- inside createGrid method which creates the board array(s)');
     for (let row = 0; row < 8; row++) {  // loop to create the 8 rows
       this.grid[row] = [];
       for (let column = 0; column < 8; column++) {
@@ -79,16 +69,14 @@ function Board(start, end) {
       }
       // join the rowOfCheckers array to a string, separated by a space
       string += rowOfCheckers.join(' ');
-      // add a 'new line'
-      string += "\n";
+      string += "\n";// add a 'new line'
     }
-
-    console.log('Current turn = ', turn.name);
+    console.log('Current turn = ', turn.name);//annouce turn each time
     console.log(string);
 
   }
 
-  this.fillBoard = () => { //FIXME need to refactor these loops, try to use turn?
+  this.fillBoard = () => { //FIXME maybe to refactor these loops?
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
       for (let b = 0; b < this.grid.length; b += 2) {
         this.grid[row].splice(b, 1, black)
@@ -123,7 +111,7 @@ function Board(start, end) {
     }
   } //end legal check
 
-  this.canItJump = () => {//FIXME refactor this
+  this.canItJump = () => {//FIXME refactor this, it's WAY too long
     if (turn === black) {
       if (move.end[0] === move.start[0] + 2) { //if trying to move +2 rows black
         if (move.end[1] === move.start[1] + 2) { //and +2 columns it's a right jump FIXME checking this twice
@@ -169,7 +157,7 @@ function Board(start, end) {
 
 function Game() {
   // console.log('1 --- inside Game class');
-  this.board = new Board(); //makes new instance of Board class
+  this.board = new Board(); //makes new instance of Board class FIXME Maybe this should be move
 
   this.start = () => {
     // console.log('2----Inside start method');
@@ -182,6 +170,8 @@ function Game() {
       this.parsInput(whichPiece, toWhere);
       if (this.board.isMoveLegal()) { //FIXME put jump check here with condition, then call remove function?
         console.log("LEGAL MOVE");
+
+
         this.board.moveIt(); //FIXME need to get this working INSIDE moveChecker
       } else {
         console.log('Illegal Move!!');
@@ -216,13 +206,8 @@ function getPrompt() {
 }
 
 const game = new Game(); //creates a new Game class instance
-// console.log(game);
-game.start(turn); //passed game instance to the start method inside of Game class
-
-
-
-
-
+game.start(); //passed game instance to the start method inside of Game class
+console.log(game);
 
 
 
@@ -235,7 +220,7 @@ if (typeof describe === 'function') {
       assert.equal(game.board.constructor.name, 'Board');
     });
     it('board should have 24 checkers', () => {
-      assert.equal(game.board.checkers.length, 24);
+      assert.equal(game.board.checkers.length, 24);//FIXME WTF is checkers?????
     });
   });
 
@@ -253,11 +238,9 @@ if (typeof describe === 'function') {
       game.moveChecker('30', '52');
       assert(game.board.grid[5][2]);
       assert(!game.board.grid[4][1]);
-      assert.equal(game.board.checkers.length, 23);
+      assert.equal(game.board.checkers.length, 23);//FIXME WTF is checkers?????
     });
   });
 } else {
   getPrompt();
 }
-
-//filter() is used in fuzzy search
