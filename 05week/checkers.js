@@ -160,7 +160,9 @@ function Game() {
   this.board = new Board(); //makes new instance of Board class FIXME Maybe this should be move
 
   this.start = () => {
-    // console.log('2----Inside start method');
+    console.log('2----Inside start method');
+    console.log('this = ', game);
+    console.log('move = ', move);
     this.board.createGrid();
     this.board.fillBoard();
   };
@@ -207,7 +209,7 @@ function getPrompt() {
 
 const game = new Game(); //creates a new Game class instance
 game.start(); //passed game instance to the start method inside of Game class
-console.log(game);
+
 
 
 
