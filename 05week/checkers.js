@@ -17,11 +17,7 @@ const rl = readline.createInterface({
 6. check for win would evaluate each players count each turn
 7. add reset fucntion to reset all variables and objects to orginial states
 */
-// const black = new Checker("Black", `\u{26ab}`, 12, false); //FIXME can I reduce this scope???? so far no...
-// const red = new Checker('Red', `\u{1F534}`, 12, false);
-const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
-const red = new Checker('Red', 'r', 12, false);
-let turn = red;
+
 
 
 const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
@@ -43,6 +39,9 @@ function Checker(name, symbol, count, king) { //name, symbol, count and king of 
 }
 
 function Board() {
+  const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
+  const red = new Checker('Red', 'r', 12, false);
+  let turn = red;
   this.grid = [];
   this.checkers = 0; //tracks checkers so tests pass
   this.createGrid = () => { // creates an 8x8 array, filled with null values
@@ -80,29 +79,28 @@ function Board() {
   }
 
   this.fillBoard = () => { //FIXME maybe to refactor these loops?
-
-    // for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
-    //   for (let b = 0; b < this.grid.length; b += 2) {
-    //     this.grid[row].splice(b, 1, black)
-    //   }
-    // }
-    // for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
-    //   this.grid[1].splice(b, 1, black)
-    // }
-    // for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
-    //   for (let r = 1; r < this.grid.length; r += 2) {
-    //     this.grid[row].splice(r, 1, red)
-    //   }
-    // }
-    // for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
-    //   this.grid[6].splice(r, 1, red)
-    // }
+    for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
+      for (let b = 0; b < this.grid.length; b += 2) {
+        this.grid[row].splice(b, 1, black)
+      }
+    }
+    for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
+      this.grid[1].splice(b, 1, black)
+    }
+    for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
+      for (let r = 1; r < this.grid.length; r += 2) {
+        this.grid[row].splice(r, 1, red)
+      }
+    }
+    for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
+      this.grid[6].splice(r, 1, red)
+    }
     //***** below is just to help test win checks, so it only pushes 1 checker each
-    this.grid[5].splice(5, 1, black)
-    black.count = 1;
-    this.grid[6].splice(6, 1, red)
-    red.count = 1;
-    turn = black;//change this back and forth for easy win tests
+    // this.grid[5].splice(5, 1, black)
+    // black.count = 1;
+    // this.grid[6].splice(6, 1, red)
+    // red.count = 1;
+    // turn = black;//change this back and forth for easy win tests
     // red.king = true;
     // black.king = true;
     //**********END TEST AREA*************************
@@ -127,7 +125,7 @@ function Game(begin, end) {
         this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null) //if legal, remove checker
         this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn) //then splice into new postion
 
-        if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
+        if (blackKingCounter < 1 || redKingCounter < 1) { //change this to determine how many are needed for king
           kingMe();
         }
         if (checkForWin()) {
@@ -142,41 +140,33 @@ function Game(begin, end) {
         } else {
           turn = red;
         }
-
       } else { //if illegal, don't move and throw error
         console.log('Illegal Move!!');
       }
     } else { //if invalid don't move and throw error
-      console.log('!!-----INVALID INPUT!!');
+      console.log('INVALID INPUT!!');
     }
-  }
+  }//end movechecker
 
   const kingMe = () => {
-    // console.log('turn before kinging= ', turn.name);
-    // console.log('black king before = ', blackKingCounter);
-    // console.log(this.board.end);
-    if (turn === black && this.board.end[0] === 7) {
-      blackKingCounter++;
+    if (turn === black && this.board.end[0] === 7) {//if black hits row 7
+      blackKingCounter++;//iterate how many times he has
     }
-    if (blackKingCounter === 1) {
-      black.king = true;
+    if (blackKingCounter === 1) {//if counter reaches threshold...
+      black.king = true;//make all pieces kings and change symbol
       black.symbol = "B";
     }
-    if (turn === red && this.board.end[0] === 0) {
-      redKingCounter++;
+    if (turn === red && this.board.end[0] === 0) {//if red hits row 0
+      redKingCounter++;//itterate how many times he has
     }
-    if (redKingCounter === 1) {
-      red.king = true;
+    if (redKingCounter === 1) {//if counter reaches threshold...
+      red.king = true;//make all pieces kings and change symbol
       red.symbol = "R"
     }
-    // console.log('black king after = ', blackKingCounter);
-    // console.log(black);
-
-  }
+  }//end KingMe
 
   const checkForWin = () => {
     return turn === red && black.count === 0 || turn === black && red.count === 0
-
   }
 
   const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
@@ -190,39 +180,38 @@ function Game(begin, end) {
     });
     this.board.begin = numberwhichPiece; //make board object's begin eaual to the new array
     this.board.end = numberToWhere; //make board object's end equal to the new array
-  }
+  }//endParseInput
 
-  const isMoveLegal = () => { //main function to check for legal moves FIXME refactor these checks
+  const isMoveLegal = () => { //main function to check for legal moves
     if (this.board.grid[this.board.begin[0]][this.board.begin[1]] === turn && //only can move own checker AND
       this.board.grid[this.board.end[0]][this.board.end[1]] === null) { //only can move to empty spot
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
         this.board.end[1] === this.board.begin[1] - 1) { //OR only move -1 column
 
-
-        if (turn === black && this.board.end[0] === this.board.begin[0] + 1 || //back can only move +1 row
-          turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 1 ||
-          turn === red && this.board.end[0] === this.board.begin[0] - 1 || //OR red can only move -1 row
-          turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 1) {
-          return true
-
-
-          
-        } //below checks for jump moves
+        if (turn === black || turn === red && red.king === true){//black regular OR red kings can move +1 row
+          if(this.board.end[0] === this.board.begin[0] + 1) {
+            return true
+          }
+        }else if (turn === red || turn === black && black.king === true){//red regular OR black kings can move +1 row
+          if (this.board.end[0] === this.board.begin[0] - 1){
+            return true
+          }
+        }//below we check for valid jump moves
       } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 || //if trying to move +2 rows black
-        turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) { //or king red +2
-        if (blackOrRedKingJumpRight() || blackOrRedKingJumpLeft()) { //call methods for either legal jump moves for black
+        turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) { //or king red +2 rows
+        if (blackOrRedKingJumpRight() || blackOrRedKingJumpLeft()) { //call methods for either legal jump moves for black or red kings
           return true
         }
       } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 || //if trying to move -2 rows red
-        turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2
-        if (redOrBlackKingJumpRight() || redOrBlackKingJumpLeft()) { //call methods for either legal jump moves for red
+        turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2 rows
+        if (redOrBlackKingJumpRight() || redOrBlackKingJumpLeft()) { //call methods for either legal jump moves for red or black kings
           return true
         }
       }
     }
   } //end legal check
 
-  /******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.*****/
+  /******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.FIXME both right jumps and both left jumps START with the same initial condition-try to refactor*/
 
   const blackOrRedKingJumpRight = () => { //this to check JUST black jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
@@ -232,7 +221,7 @@ function Game(begin, end) {
         return true
       }
     }
-  } //end blackJumpRight
+  } //end blackOrRedKingJumpRight
 
   const blackOrRedKingJumpLeft = () => { //this to check JUST black jumps to the left
     if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
@@ -242,7 +231,7 @@ function Game(begin, end) {
         return true
       }
     }
-  } //end blackJumpLeft
+  } //end blackOrRedKingJumpLeft
 
   const redOrBlackKingJumpRight = () => { //this to check JUST red jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a red right jump
@@ -252,7 +241,7 @@ function Game(begin, end) {
         return true
       }
     }
-  } //end redJumpRight
+  } //end redOrBlackKingJumpRight
 
   const redOrBlackKingJumpLeft = () => { //this to check JUST red jumps to the left
     if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
@@ -262,7 +251,7 @@ function Game(begin, end) {
         return true
       }
     }
-  } //end redJumpLeft
+  } //end redOrBlackKingJumpLeft
 
   const killChecker = (rowPosition, columnPostion) => { //pass in coordinates from revlevant jump checks to kill a checker
     this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
