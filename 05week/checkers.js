@@ -1,5 +1,5 @@
 'use strict';
-
+const colors = require('colors');
 const assert = require('assert');
 const readline = require('readline');
 const rl = readline.createInterface({
@@ -19,10 +19,8 @@ const rl = readline.createInterface({
 */
 // const black = new Checker("Black", `\u{26ab}`, 12, false); //FIXME can I reduce this scope???? so far no...
 // const red = new Checker('Red', `\u{1F534}`, 12, false);
-const black = new Checker("Black", 'b', 12, false, '1'); //FIXME can I reduce this scope???? so far no...
-const red = new Checker('Red', 'r', 12, false, '1');
-// const black = new Checker("Black", "B", 12);
-// const red = new Checker('Red', "R", 12);
+const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
+const red = new Checker('Red', 'r', 12, false);
 let turn = red;
 
 
@@ -37,12 +35,11 @@ const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers a
   }
 }
 
-function Checker(name, symbol, count, king, id) { //name, symbol, count and king of each checker
+function Checker(name, symbol, count, king) { //name, symbol, count and king of each checker
   this.name = name;
   this.symbol = symbol;
   this.count = count;
   this.king = king;
-  this.id = id;
 }
 
 function Board() {
@@ -75,7 +72,9 @@ function Board() {
       string += rowOfCheckers.join(' ');
       string += "\n"; // add a 'new line'
     }
-    console.log(`Current turn = ${turn.name}`); //annouce turn each time
+    if (turn === black && red.count !== 0 || turn === red && black.count !== 0) {
+      console.log(`Current turn = ${turn.name}`); //annouce turn each time
+    }
     console.log(`${string}`);
 
   }
@@ -85,23 +84,26 @@ function Board() {
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
       for (let b = 0; b < this.grid.length; b += 2) {
         this.grid[row].splice(b, 1, black)
-        this.checkers++
       }
     }
     for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
       this.grid[1].splice(b, 1, black)
-      this.checkers++
     }
     for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
       for (let r = 1; r < this.grid.length; r += 2) {
         this.grid[row].splice(r, 1, red)
-        this.checkers++
       }
     }
     for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
       this.grid[6].splice(r, 1, red)
-      this.checkers++
     }
+    //***** below is just to help test win checks, so it only pushes 1 checker each
+    // this.grid[2].splice(2, 1, black)
+    // black.count = 1;
+    // this.grid[4].splice(4, 1, red)
+    // red.count = 1;
+    // turn = red;//change this back and forth for easy win tests
+    //**********END TEST AREA*************************
   }
 } //end board class
 
@@ -126,6 +128,13 @@ function Game(begin, end) {
         if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
           kingMe();
         }
+        if (checkForWin()) {
+          console.log(`${turn.name} Wins!!!`);
+          rl.question('Press Enter to start a new game: ', () => { // prompt user to start new game
+            this.start();
+            getPrompt();
+          });
+        }
         if (turn === red) { //switch turns
           turn = black;
         } else {
@@ -141,9 +150,9 @@ function Game(begin, end) {
   }
 
   const kingMe = () => {
-    console.log('turn before kinging= ', turn.name);
-    console.log('black king before = ', blackKingCounter);
-    console.log(this.board.end);
+    // console.log('turn before kinging= ', turn.name);
+    // console.log('black king before = ', blackKingCounter);
+    // console.log(this.board.end);
     if (turn === black && this.board.end[0] === 7) {
       blackKingCounter++;
     }
@@ -158,8 +167,13 @@ function Game(begin, end) {
       red.king = true;
       red.symbol = "R"
     }
-    console.log('black king after = ', blackKingCounter);
-    console.log(black);
+    // console.log('black king after = ', blackKingCounter);
+    // console.log(black);
+
+  }
+
+  const checkForWin = () => {
+    return turn === red && black.count === 0 || turn === black && red.count === 0
 
   }
 
@@ -167,10 +181,10 @@ function Game(begin, end) {
     whichPiece = whichPiece.split(''); //split into an array of 2 strings
     toWhere = toWhere.split('');
     const numberwhichPiece = whichPiece.map((num) => { //parse each array into numbers
-      return parseInt(num);
+      return Number(num);
     });
     const numberToWhere = toWhere.map((num2) => {
-      return parseInt(num2);
+      return Number(num2);
     });
     this.board.begin = numberwhichPiece; //make board object's begin eaual to the new array
     this.board.end = numberToWhere; //make board object's end equal to the new array
@@ -182,20 +196,20 @@ function Game(begin, end) {
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
         this.board.end[1] === this.board.begin[1] - 1) { //OR only move -1 column
         if (turn === black && this.board.end[0] === this.board.begin[0] + 1 || //back can only move +1 row
-            turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 1 ||
-            turn === red && this.board.end[0] === this.board.begin[0] - 1 || //OR red can only move -1 row
-            turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 1){
+          turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 1 ||
+          turn === red && this.board.end[0] === this.board.begin[0] - 1 || //OR red can only move -1 row
+          turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 1) {
           return true
-        }//below checks for double jump moves
-      } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 ||//if trying to move +2 rows black
-                 turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) {//or king red +2
+        } //below checks for double jump moves
+      } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 || //if trying to move +2 rows black
+        turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) { //or king red +2
         if (blackJumpRight()) { //call methods for either legal jump moves for black
           return true
-        } else if (blackJumpLeft()) {//FIXME can use just 1 jump right check once check for turn is in jump methods
+        } else if (blackJumpLeft()) { //FIXME can use just 1 jump right check once check for turn is in jump methods
           return true
         } //OR
-      } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 ||//if trying to move -2 rows red
-                 turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) {//or king black -2
+      } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 || //if trying to move -2 rows red
+        turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2
         if (redJumpRight()) { //call methods for either legal jump moves for red
           return true
         } else if (redJumpLeft()) {
@@ -211,7 +225,7 @@ function Game(begin, end) {
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== turn &&
         this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped position is not black or null
-        killChecker(this.board.end[0] - 1, this.board.end[1] - 1); //FIXME WHY TF did this not work for red
+        killChecker(this.board.end[0] - 1, this.board.end[1] - 1); //
         return true
       }
     }
@@ -271,7 +285,7 @@ function getPrompt() {
 
 const game = new Game([null, null], [null, null]); //creates a new Game class instance with begin and end constuctors
 game.start(); //passed game instance to the start method inside of Game class
-// console.log(game.board.checkers);
+
 
 
 
