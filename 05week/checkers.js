@@ -19,6 +19,8 @@ const rl = readline.createInterface({
 */
 const black = new Checker("Black", `\u{26ab}`, 12); //FIXME can I reduce this scope???? so far no...
 const red = new Checker('Red', `\u{1F534}`, 12);
+// const black = new Checker("Black", "B", 12);
+// const red = new Checker('Red', "R", 12);
 let turn = red;
 
 const isInputValid = (whichPiece, toWhere) => { //FIXME mixed good/bad numbers are passing and they should'nt
@@ -67,8 +69,8 @@ function Board() {
       string += rowOfCheckers.join(' ');
       string += "\n"; // add a 'new line'
     }
-    console.log('Current turn = ', turn.name); //annouce turn each time
-    console.log(string);
+    console.log(`Current turn = ${turn.name}`); //annouce turn each time
+    console.log(`${string}`);
 
   }
 
@@ -99,13 +101,13 @@ function Game(begin, end) {
 
   this.start = () => {
     this.board.createGrid();
-    this.board.fillBoard();
+    this.board.fillBoard();//call to fill board with initial postions
   };
 
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if valid and legal
     if (isInputValid(whichPiece, toWhere)) {//check for valid inputs
-      this.parsInput(whichPiece, toWhere);//parse the inputs to numbers
-      if (this.isMoveLegal()) { //check if move is legal
+      parsInput(whichPiece, toWhere);//parse the inputs to numbers
+      if (isMoveLegal()) { //check if move is legal
         this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null)//if legal, remove checker
         this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn)//then splice into new postion
         if (turn === red) {//switch turns
@@ -116,12 +118,12 @@ function Game(begin, end) {
       } else {//if illegal, don't move and throw error
         console.log('Illegal Move!!');
       }
-    } else {
-      console.log('!!-----INVALID INPUT!!');//if invalid don't move and throw error
+    } else {//if invalid don't move and throw error
+      console.log('!!-----INVALID INPUT!!');
     }
   }
 
-  this.parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
+  const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
     whichPiece = whichPiece.split('');//split into an array of 2 strings
     toWhere = toWhere.split('');
     const numberwhichPiece = whichPiece.map((num) => {//parse each array into numbers
@@ -134,7 +136,7 @@ function Game(begin, end) {
     this.board.end = numberToWhere; //make board object's end equal to the new array
   }
 
-  this.isMoveLegal = () => {
+  const isMoveLegal = () => {//main function to check for legal moves
     if (this.board.grid[this.board.begin[0]][this.board.begin[1]] === turn && //only can move own checker AND
       this.board.grid[this.board.end[0]][this.board.end[1]] === null) { //only can move to empty spot
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
@@ -144,78 +146,77 @@ function Game(begin, end) {
           return true
         }
       } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2) { //if trying to move +2 rows black
-        if (this.blackJumpRight()) {//check for both legal jump moves
+        if (blackJumpRight()) {//call methods for either legal jump moves for black
           return true
-        } else if (this.blackJumpLeft()) {
+        } else if (blackJumpLeft()) {
           return true
-        }
+        }//OR
       } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2) { //if trying to move -2 rows red
-        if (this.redJumpRight()) {//check for both legal jump moves
+        if (redJumpRight()) {//call methods for either legal jump moves for red
           return true
-        } else if (this.redJumpLeft()) {
+        } else if (redJumpLeft()) {
           return true
         }
       }
     }
   } //end legal check
 
-//**the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.
+/******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.*****/
 
-  this.blackJumpRight = () => { //this to check JUST black jumps to the right
+  const blackJumpRight = () => { //this to check JUST black jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped piece is not black or null
-        this.killChecker(this.board.end[0] - 1, this.board.end[1] - 1);//if it's niether, remove opposite player
+        this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped position is not black or null
+        killChecker(this.board.end[0] - 1, this.board.end[1] - 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end blackJumpRight
 
-  this.blackJumpLeft = () => {//this to check JUST black jumps to the left
-    if ((this.board.end[1] === this.board.begin[1] - 2)) { //or -2 columns it's a left jump FIXME checking this twice
+  const blackJumpLeft = () => {//this to check JUST black jumps to the left
+    if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== null) { //check that jumped piece is not black or null
-        this.killChecker(this.board.end[0] - 1, this.board.end[1] + 1);//if it's niether, remove opposite player
+        this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== null) { //check that jumped postion is not black or null
+        killChecker(this.board.end[0] - 1, this.board.end[1] + 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end blackJumpLeft
 
-  this.redJumpRight = () => {//this to check JUST red jumps to the right
-    if (this.board.end[1] === this.board.begin[1] + 2) { //and +2 columns it's a red right jump
+  const redJumpRight = () => {//this to check JUST red jumps to the right
+    if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a red right jump
       if (this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== null) { //check that jumped piece is not red or null
-        this.killChecker(this.board.end[0] + 1, this.board.end[1] - 1);//if it's niether, remove opposite player
+        this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== null) { //check that jumped postion is not red or null
+        killChecker(this.board.end[0] + 1, this.board.end[1] - 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end redJumpRight
 
-  this.redJumpLeft = () => {//this to check JUST red jumps to the left
-    if ((this.board.end[1] === this.board.begin[1] - 2)) { //or -2 columns it's a left jump
+  const redJumpLeft = () => {//this to check JUST red jumps to the left
+    if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
       if (this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== turn &&
         this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== null) { //check that jumped postion is not red or null
-        this.killChecker(this.board.end[0] + 1, this.board.end[1] + 1);//if it's niether, remove opposite player
-        // console.log('hitting red jump left true');
+        killChecker(this.board.end[0] + 1, this.board.end[1] + 1);//if it's niether, remove opposite player
         return true
       }
     }
   } //end redJumpLeft
 
-  this.killChecker = (rowPosition, columnPostion) => {
-    this.board.grid[rowPosition].splice([columnPostion], 1)
+  const killChecker = (rowPosition, columnPostion) => {//pass in coordinates from revlevant jump checks to kill a checker
+    this.board.grid[rowPosition].splice([columnPostion], 1)//splice out the jumped checker
     if (turn === red) {
-      black.count--
+      black.count--//lower black count by 1
       console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`);
     } else {
-      red.count--
+      red.count--//lower red count by 1
       console.log(`${red.name} has lost a piece and only has ${red.count} checkers left!`);
     }
   }
 } //end Game class
 
 function getPrompt() {
-  game.board.viewGrid(); // call to print out initial board
+  game.board.viewGrid(); //call to print out initial board
   rl.question('which piece?: ', (whichPiece) => {
     rl.question('to where?: ', (toWhere) => {
       game.moveChecker(whichPiece, toWhere);
@@ -226,6 +227,16 @@ function getPrompt() {
 
 const game = new Game([null, null], [null, null]); //creates a new Game class instance with begin and end constuctors
 game.start(); //passed game instance to the start method inside of Game class
+
+
+
+
+
+
+
+
+
+
 
 // Tests
 
