@@ -114,8 +114,8 @@ function Game(begin, end) {
     this.board.createGrid();
     this.board.fillBoard(); //call to fill board with initial postions
   };
-  // let blackKingCounter = 0;
-  // let redKingCounter = 0;
+  let blackKingCounter = 0;
+  let redKingCounter = 0;
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if valid and legal
     if (isInputValid(whichPiece, toWhere)) { //check for valid inputs
       parsInput(whichPiece, toWhere); //parse the inputs to numbers
@@ -123,9 +123,9 @@ function Game(begin, end) {
         this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null) //if legal, remove checker
         this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn) //then splice into new postion
 
-        // if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
-        //   kingMe();
-        // }
+        if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
+          kingMe();
+        }
         if (turn === red) { //switch turns
           turn = black;
         } else {
@@ -140,26 +140,28 @@ function Game(begin, end) {
     }
   }
 
-  // const kingMe = () => {
-  //   console.log('turn before kinging= ', turn.name);
-  //   console.log('black king before = ', blackKingCounter);
-  //   console.log(this.board.end);
-  //   if (turn === black && this.board.end[0] === 7) {
-  //     blackKingCounter++;
-  //   }
-  //   if (blackKingCounter === 1) {
-  //     black.king = true;
-  //   }
-  //   if (turn === red && this.board.end[0] === 0) {
-  //     redKingCounter++;
-  //   }
-  //   if (redKingCounter === 1) {
-  //     red.king = true;
-  //   }
-  //   console.log('black king after = ', blackKingCounter);
-  //   console.log(black);
-  //
-  // }
+  const kingMe = () => {
+    console.log('turn before kinging= ', turn.name);
+    console.log('black king before = ', blackKingCounter);
+    console.log(this.board.end);
+    if (turn === black && this.board.end[0] === 7) {
+      blackKingCounter++;
+    }
+    if (blackKingCounter === 1) {
+      black.king = true;
+      black.symbol = "B";
+    }
+    if (turn === red && this.board.end[0] === 0) {
+      redKingCounter++;
+    }
+    if (redKingCounter === 1) {
+      red.king = true;
+      red.symbol = "R"
+    }
+    console.log('black king after = ', blackKingCounter);
+    console.log(black);
+
+  }
 
   const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
     whichPiece = whichPiece.split(''); //split into an array of 2 strings
@@ -174,22 +176,26 @@ function Game(begin, end) {
     this.board.end = numberToWhere; //make board object's end equal to the new array
   }
 
-  const isMoveLegal = () => { //main function to check for legal moves
+  const isMoveLegal = () => { //main function to check for legal moves FIXME refactor these checks
     if (this.board.grid[this.board.begin[0]][this.board.begin[1]] === turn && //only can move own checker AND
       this.board.grid[this.board.end[0]][this.board.end[1]] === null) { //only can move to empty spot
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
         this.board.end[1] === this.board.begin[1] - 1) { //OR only move -1 column
         if (turn === black && this.board.end[0] === this.board.begin[0] + 1 || //back can only move +1 row
-          turn === red && this.board.end[0] === this.board.begin[0] - 1) { //OR red can only move -1 row
+            turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 1 ||
+            turn === red && this.board.end[0] === this.board.begin[0] - 1 || //OR red can only move -1 row
+            turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 1){
           return true
-        }
-      } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2) { //if trying to move +2 rows black
+        }//below checks for double jump moves
+      } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 ||//if trying to move +2 rows black
+                 turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) {//or king red +2
         if (blackJumpRight()) { //call methods for either legal jump moves for black
           return true
-        } else if (blackJumpLeft()) {
+        } else if (blackJumpLeft()) {//FIXME can use just 1 jump right check once check for turn is in jump methods
           return true
         } //OR
-      } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2) { //if trying to move -2 rows red
+      } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 ||//if trying to move -2 rows red
+                 turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) {//or king black -2
         if (redJumpRight()) { //call methods for either legal jump moves for red
           return true
         } else if (redJumpLeft()) {
@@ -199,13 +205,13 @@ function Game(begin, end) {
     }
   } //end legal check
 
-  /******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.*****/
+  /******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was. FIXME can reduce too 2 methods since kings can jump either way*****/
 
   const blackJumpRight = () => { //this to check JUST black jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
       if (this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== turn &&
         this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped position is not black or null
-        killChecker(this.board.end[0] - 1, this.board.end[1] - 1); //if it's niether, remove opposite player
+        killChecker(this.board.end[0] - 1, this.board.end[1] - 1); //FIXME WHY TF did this not work for red
         return true
       }
     }
