@@ -248,7 +248,7 @@ function Game(begin, end) {
   } //end redJumpLeft
 
   const killChecker = (rowPosition, columnPostion) => { //pass in coordinates from revlevant jump checks to kill a checker
-    this.board.grid[rowPosition].splice([columnPostion], 1) //splice out the jumped checker
+    this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
     if (turn === red) {
       black.count-- //lower black count by 1
       console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`);
