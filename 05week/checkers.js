@@ -114,8 +114,8 @@ function Game(begin, end) {
     this.board.createGrid();
     this.board.fillBoard(); //call to fill board with initial postions
   };
-  let blackKingCounter = 0;
-  let redKingCounter = 0;
+  // let blackKingCounter = 0;
+  // let redKingCounter = 0;
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if valid and legal
     if (isInputValid(whichPiece, toWhere)) { //check for valid inputs
       parsInput(whichPiece, toWhere); //parse the inputs to numbers
@@ -123,9 +123,9 @@ function Game(begin, end) {
         this.board.grid[this.board.begin[0]].splice([this.board.begin[1]], 1, null) //if legal, remove checker
         this.board.grid[this.board.end[0]].splice([this.board.end[1]], 1, turn) //then splice into new postion
 
-        if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
-          kingMe();
-        }
+        // if (blackKingCounter < 1 || redKingCounter < 1) { //FIXME change this to determine how many are needed for king
+        //   kingMe();
+        // }
         if (turn === red) { //switch turns
           turn = black;
         } else {
@@ -140,26 +140,26 @@ function Game(begin, end) {
     }
   }
 
-  const kingMe = () => {
-    console.log('turn before kinging= ', turn.name);
-    console.log('black king before = ', blackKingCounter);
-    console.log(this.board.end);
-    if (turn === black && this.board.end[0] === 7) {
-      blackKingCounter++;
-    }
-    if (blackKingCounter === 1) {
-      black.king = true;
-    }
-    if (turn === red && this.board.end[0] === 0) {
-      redKingCounter++;
-    }
-    if (redKingCounter === 1) {
-      red.king = true;
-    }
-    console.log('black king after = ', blackKingCounter);
-    console.log(black);
-
-  }
+  // const kingMe = () => {
+  //   console.log('turn before kinging= ', turn.name);
+  //   console.log('black king before = ', blackKingCounter);
+  //   console.log(this.board.end);
+  //   if (turn === black && this.board.end[0] === 7) {
+  //     blackKingCounter++;
+  //   }
+  //   if (blackKingCounter === 1) {
+  //     black.king = true;
+  //   }
+  //   if (turn === red && this.board.end[0] === 0) {
+  //     redKingCounter++;
+  //   }
+  //   if (redKingCounter === 1) {
+  //     red.king = true;
+  //   }
+  //   console.log('black king after = ', blackKingCounter);
+  //   console.log(black);
+  //
+  // }
 
   const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
     whichPiece = whichPiece.split(''); //split into an array of 2 strings
@@ -242,7 +242,7 @@ function Game(begin, end) {
   } //end redJumpLeft
 
   const killChecker = (rowPosition, columnPostion) => { //pass in coordinates from revlevant jump checks to kill a checker
-    this.board.grid[rowPosition].splice([columnPostion], 1) //splice out the jumped checker
+    this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
     if (turn === red) {
       black.count-- //lower black count by 1
       console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`);
