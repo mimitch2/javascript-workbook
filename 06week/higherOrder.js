@@ -1,28 +1,57 @@
 'use strict';
 
 const assert = require('assert');
-let arr1 = [1, 2, 3];
 
-const increase=(num)=>{
-  return num++;
+// const arr1 = [1, 2, 3];
+let count = 0;
+
+//------------forEach------------
+
+const increase=()=> {
+  console.log('increase')
+  count += 1
 }
 
-function forEach(arr, callback) {
+const forEach=(arr, callback) => {
   for (var i = 0; i < arr.length; i++) {
-    arr[i];
+    callback()
   }
-  return arr;
+  return count;
 }
 
-forEach(arr1, increase);
+//---------map---------------
 
-function map(arr, callback) {
-  // Your code here
+const multiplyByTwo=(num)=> {
+  return num * 2
+}
+
+const map=(arr, callback) => {
+  const newArr = [];
+  for (var i = 0; i < arr.length; i++) {
+    newArr.push(callback(arr[i]))
+  }
+  return newArr;
+};
+
+map(arr1, multiplyByTwo);
+
+//------------filter-----------
+const arr1 = [1, 2, 3];
+const greaterThan=(x)=> {
+  return  x > 1
 }
 
 function filter(arr, callback) {
-  // Your code here
+  const newArr= [];
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] === true) {
+      return newArr.push[i]
+    }
+  }
+
 }
+
+filter(arr1, greaterThan);
 
 function some(arr, callback) {
   // Your code here
