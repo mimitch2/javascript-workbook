@@ -17,8 +17,8 @@ const rl = readline.createInterface({
 6. check for win would evaluate each players count each turn
 7. add reset fucntion to reset all variables and objects to orginial states
 */
-const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
-const red = new Checker('Red', 'r', 12, false);
+const black = new Checker("Black", 'b', 0, false); //FIXME can I reduce this scope???? so far no...
+const red = new Checker('Red', 'r', 0, false);
 let turn = red;
 let win = false;
 
@@ -50,7 +50,7 @@ function Board() {
   }
 
   this.viewGrid = () => { // prints out the board
-    let string = "  0 1 2 3 4 5 6 7\n"; // add our column numbers
+    let string = "  0 1 2 3 4 5 6 7 \n"; // add our column numbers
     for (let row = 0; row < 8; row++) { // we start with our row number in our array
       const rowOfCheckers = [row];
       for (let column = 0; column < 8; column++) { // a loop within a loop
@@ -67,38 +67,37 @@ function Board() {
       string += "\n"; // add a 'new line'
     }
     if (!win) {
-      console.log(win);
-      console.log(`Current turn = ${turn.name}`); //annouce turn each time
+      console.log(`Current turn = ${turn.name}`.yellow.underline); //annouce turn each time
     }
     console.log(`${string}`);
 
   }
 
-  this.fillBoard = () => { //FIXME maybe to refactor these loops?
-    // for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
-    //   for (let b = 0; b < this.grid.length; b += 2) {
-    //     this.grid[row].splice(b, 1, black)
-    //   }
-    // }
-    // for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
-    //   this.grid[1].splice(b, 1, black)
-    // }
-    // for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
-    //   for (let r = 1; r < this.grid.length; r += 2) {
-    //     this.grid[row].splice(r, 1, red)
-    //   }
-    // }
-    // for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
-    //   this.grid[6].splice(r, 1, red)
-    // }
+  this.fillBoard = () => { 
+    for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
+      for (let b = 0; b < this.grid.length; b += 2) {
+        this.grid[row].splice(b, 1, black)
+      }
+    }
+    for (let b = 1; b < this.grid.length; b += 2) { //fill row 2 with alternate pattern black
+      this.grid[1].splice(b, 1, black)
+    }
+    for (let row = 5; row < this.grid.length; row += 2) { //fill row 5 and 7 with same pattern red
+      for (let r = 1; r < this.grid.length; r += 2) {
+        this.grid[row].splice(r, 1, red)
+      }
+    }
+    for (let r = 0; r < 8; r += 2) { //fill row 6 with alternate pattern red
+      this.grid[6].splice(r, 1, red)
+    }
     // ***** below is just to help test win checks, so it only pushes 1 checker each
-    this.grid[5].splice(5, 1, black)
-    black.count = 1;
-    this.grid[6].splice(6, 1, red)
-    red.count = 1;
-    turn = red; //change this back and forth for easy win tests
-    red.king = true;
-    black.king = true;
+    // this.grid[5].splice(5, 1, black)
+    // black.count = 1;
+    // this.grid[6].splice(6, 1, red)
+    // red.count = 1;
+    // turn = red; //change this back and forth for easy win tests
+    // // red.king = true;
+    // // black.king = true;
     //**********END TEST AREA*************************
   }
 } //end board class
@@ -112,8 +111,7 @@ function Game(begin, end) {
     this.board.createGrid();
     this.board.fillBoard(); //call to fill board with initial postions
   };
-  let blackKingCounter = 0;
-  let redKingCounter = 0;
+
   this.moveChecker = (whichPiece, toWhere) => { //move the checker if valid and legal
     whichPiece = whichPiece.split(''); //split into an array of 2 strings
     toWhere = toWhere.split('');
@@ -125,20 +123,25 @@ function Game(begin, end) {
         if (!black.king || !red.king) { //only call kingMe if one or both are not kinged
           kingMe();
         }
+        if (!win){
+          if (turn === red) { //switch turns
+            turn = black;
+          } else {
+            turn = red;
+          }
+        }
         if (checkForWin()) {
           win = true;
-          console.log(`${turn.name} Wins!!!`);
-          // this.board.viewGrid();
-          rl.question('Press Enter to start a new game: ', () => { // prompt user to start new game
-            // this.start();//FIXME why is the prompt printing twice???/
-            getPrompt();
-          });
+          this.board.viewGrid();
+          console.log(`\n    ${turn.name} Wins!!!  \n`.yellow.underline);
+          console.log(`      NEW GAME   \n`.green.underline);
+          resetGame();
+          console.log(red, black);
+          console.log('turn ', turn);
+          console.log('win ' , win);
+
         }
-        if (turn === red) { //switch turns
-          turn = black;
-        } else {
-          turn = red;
-        }
+
       } else { //if illegal, don't move and throw error
         console.log('Illegal Move!!');
       }
@@ -147,7 +150,12 @@ function Game(begin, end) {
     }
   } //end movechecker
 
+
+
   const kingMe = () => {
+    let blackKingCounter = 0;//these count how many pieces made it to end of board
+    let redKingCounter = 0;
+
     if (turn === black && this.board.end[0] === 7) { //if black hits row 7
       blackKingCounter++; //iterate how many times he has
     }
@@ -160,12 +168,24 @@ function Game(begin, end) {
     }
     if (redKingCounter === 1) { //if counter reaches threshold...
       red.king = true; //make all red pieces kings and change symbol
-      red.symbol = "R"
+      red.symbol = "R";
     }
   } //end KingMe
 
-  const checkForWin = () => {
+  const checkForWin=()=> {
     return black.count === 0 || red.count === 0
+  }
+
+  const resetGame=()=> {
+    black.symbol = "b";
+    black.count = 12;
+    red.symbol = "r";
+    red.count = 12;
+    black.king = false;
+    red.king = false;
+    win = false;
+    turn = red;
+    this.start();
   }
 
   const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
@@ -254,10 +274,10 @@ function Game(begin, end) {
     this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
     if (turn === red) {
       black.count-- //lower black count by 1
-      console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`);
+      console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`.red);
     } else {
       red.count-- //lower red count by 1
-      console.log(`${red.name} has lost a piece and only has ${red.count} checkers left!`);
+      console.log(`${red.name} has lost a piece and only has ${red.count} checkers left!`.red);
     }
   }
 } //end Game class
@@ -266,7 +286,7 @@ function getPrompt() {
   game.board.viewGrid(); //call to print out initial board
   rl.question('which piece?: ', (whichPiece) => {
     rl.question('to where?: ', (toWhere) => {
-      game.moeChecker(whichPiece, toWhere);
+      game.moveChecker(whichPiece, toWhere);
       getPrompt();
     });
   });
