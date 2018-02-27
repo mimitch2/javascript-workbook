@@ -39,7 +39,7 @@ function Checker(name, symbol, count, king) { //name, symbol, count and king of 
 
 function Board() {
   this.grid = [];
-  this.checkers = [];//FIXME??? not sure what this is for other than the original test
+  // this.checkers = [];//FIXME??? not sure what this is for other than the original test
 
   this.createGrid = () => { // creates an 8x8 array, filled with null values
     for (let row = 0; row < 8; row++) { // loop to create the 8 rows
@@ -53,7 +53,7 @@ function Board() {
   // const setCheckerCount=()=> {//FIXME, can't get this to work correctly, it always starts with 0
   //   console.log('start checkercount');
   //   this.grid.forEach((item)=> {
-  //     if (this.grid[item] === black || this.grid[item] === red){
+  //     if (this.grid[item] !== null){
   //       this.grid[item].count++
   //       console.log('YES');
   //     }
@@ -65,7 +65,7 @@ function Board() {
   // setCheckerCount();
 
   this.viewGrid = () => { // prints out the board
-    let string = "  0 1 2 3 4 5 6 7 \n"; // add our column numbers
+    let string = "  0 1 2 3 4 5 6 7\n"; // add our column numbers
     for (let row = 0; row < 8; row++) { // we start with our row number in our array
       const rowOfCheckers = [row];
       for (let column = 0; column < 8; column++) { // a loop within a loop
@@ -83,14 +83,14 @@ function Board() {
       string += "\n"; // add a 'new line'
 
     }
+
+
     if (!win) {
       console.log(`Current turn = ${turn.name}`.yellow.underline); //annouce turn each time
     }
     console.log(`${string}`);
 
   }
-
-
 
   this.fillBoard = () => {
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
@@ -119,13 +119,17 @@ function Board() {
     // // red.king = true;
     // // black.king = true;
     //**********END TEST AREA*************************
+
   }
+
 } //end board class
 
 function Game(begin, end) {
   this.begin = begin; //numneric array of original whichPiece input
   this.end = end; //numneric array of original toWhere input
   this.board = new Board(); //makes new instance of Board class
+
+
 
   this.start = () => {
     this.board.createGrid();
