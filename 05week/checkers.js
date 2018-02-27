@@ -7,16 +7,6 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-/*
--is valid uses search() regEx to verify input is proper.
-1. use  R and B class attributes  to push into arrays to start and print out board -- how to push them in?
-2. create 2 more variables that track how many pieces each player has, and update each time one is removed
-3. create a playerTurn variable to track turns
-4. create legal move function to only allow Red to move red, black to move black AND is your move allowed
-5. move piece, and if a jump, remove jumped B or R from array  AND reduce counter need to change string into number split
-6. check for win would evaluate each players count each turn
-7. add reset fucntion to reset all variables and objects to orginial states
-*/
 const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
 const red = new Checker('Red', 'r', 12, false);
 let turn = red;
@@ -40,7 +30,6 @@ function Checker(name, symbol, count, king) { //name, symbol, count and king of 
 function Board() {
   this.grid = [];
   // this.checkers = [];//FIXME??? not sure what this is for other than the original test
-
   this.createGrid = () => { // creates an 8x8 array, filled with null values
     for (let row = 0; row < 8; row++) { // loop to create the 8 rows
       this.grid[row] = [];
@@ -83,13 +72,10 @@ function Board() {
       string += "\n"; // add a 'new line'
 
     }
-
-
     if (!win) {
       console.log(`Current turn = ${turn.name}`.yellow.underline); //annouce turn each time
     }
     console.log(`${string}`);
-
   }
 
   this.fillBoard = () => {
@@ -119,17 +105,13 @@ function Board() {
     // // red.king = true;
     // // black.king = true;
     //**********END TEST AREA*************************
-
   }
-
 } //end board class
 
 function Game(begin, end) {
   this.begin = begin; //numneric array of original whichPiece input
   this.end = end; //numneric array of original toWhere input
   this.board = new Board(); //makes new instance of Board class
-
-
 
   this.start = () => {
     this.board.createGrid();
@@ -168,8 +150,6 @@ function Game(begin, end) {
       console.log('INVALID INPUT!!');
     }
   } //end movechecker
-
-
 
   const kingMe = () => {
     let blackKingCounter = 0;//these count how many pieces made it to end of board
@@ -247,7 +227,7 @@ function Game(begin, end) {
     }
   } //end isMoveLegal
 
-  /******the four methods below each check for specific jump scenarios and remove the jumped piece depending on if it's red or black, and what direction the jump was.  FIXME both right jumps and both left jumps START with the same initial condition-try to refactor*/
+  /******the four methods below each check for specific jump scenarios.  FIXME both right jumps and both left jumps START with the same initial condition. Try to refactor*/
 
   const blackOrRedKingJumpRight = () => { //this to check JUST black jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
@@ -355,7 +335,7 @@ if (typeof describe === 'function') {
       assert(game.board.grid[5][5]);
       assert(!game.board.grid[3][3]);
       const checkerCount = red.count + black.count
-      assert.equal(checkerCount, 23); //FIXME WTF is checkers?????
+      assert.equal(checkerCount, 23);
     });
     it('should be able to king either piece', () => {
       game.board.viewGrid();
