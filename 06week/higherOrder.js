@@ -1,10 +1,20 @@
 'use strict';
 
 const assert = require('assert');
+let arr1 = [1, 2, 3];
+
+const increase=(num)=>{
+  return num++;
+}
 
 function forEach(arr, callback) {
-  // Your code here
+  for (var i = 0; i < arr.length; i++) {
+    arr[i];
+  }
+  return arr;
 }
+
+forEach(arr1, increase);
 
 function map(arr, callback) {
   // Your code here
@@ -22,6 +32,9 @@ function every(arr, callback) {
   // Your code here
 }
 
+
+
+//TESTS
 if (typeof describe === 'function') {
 
   describe('#forEach()', () => {
