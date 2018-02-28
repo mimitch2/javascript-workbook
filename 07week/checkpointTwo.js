@@ -32,13 +32,12 @@ const numCount = {};
 
 nums.forEach((item) => {
   if (!numCount[[item]]) { //if a number's key is not there...
-    numCount[[item]] = 0; //push it into the object
+    numCount[[item]] = 0; //create a key/value in object
   }
   ++numCount[[item]]; //then increase it's count for each instance
 })
 
 console.log(numCount)
-
 
 // // Find the index of the first "Austin" value (the value plus its index equals 512)
 
