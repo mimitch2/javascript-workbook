@@ -4,10 +4,8 @@ const strNums = ["1", "4", "1", "5", "9", "2", "6", "5", "3", "5", "8", "9", "7"
 
 // Given 1000 digits of PI as strings, return an array of the digits as numbers
 
-
 const nums = strNums.map(Number)
 console.log(nums);
-
 
 //Find the sum of the even values
 
@@ -44,13 +42,9 @@ console.log(numCount)
 
 // // Find the index of the first "Austin" value (the value plus its index equals 512)
 
-// const atxIdx =
-
-nums.forEach((item) => {
-  // if(nums.indexOf(item) + nums[item] === 512){
-  console.log(item, nums[item]);
-  // }
-})
+const atxIdx = nums.findIndex((item, index)=> {
+  return item + index === 512
+});
 
 
-// console.log(`index: ${atxIdx}, value: ${nums[atxIdx]}`);
+console.log(`index: ${atxIdx}, value: ${nums[atxIdx]}`);
