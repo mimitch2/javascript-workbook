@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 
-// const arr1 = [1, 2, 3];
+const arr1 = [1, 2, 3];
 let count = 0;
 
 //------------forEach------------
@@ -36,32 +36,57 @@ const map=(arr, callback) => {
 map(arr1, multiplyByTwo);
 
 //------------filter-----------
-const arr1 = [1, 2, 3];
+
 const greaterThan=(x)=> {
-  return  x > 1
+  return  x > 3
 }
 
 function filter(arr, callback) {
   const newArr= [];
   for (var i = 0; i < arr.length; i++) {
-    if (arr[i] === true) {
-      return newArr.push[i]
+    if (callback(arr[i])) {
+      newArr.push(arr[i])
     }
   }
-
+  return newArr
 }
 
 filter(arr1, greaterThan);
 
+
+//-------------some------------
+
+const isGreaterThan=(num)=> {
+  return num > 1
+}
+
 function some(arr, callback) {
-  // Your code here
+  for (var i = 0; i < arr.length; i++) {
+    if(callback(arr[i])){
+      return true
+    }
+  }
+  return false
+}
+
+some(arr1, isGreaterThan)
+
+//---------------every------------
+
+const isGreterThan=(num)=> {
+  num > 1
 }
 
 function every(arr, callback) {
-  // Your code here
+  for (var i = 0; i < arr.length; i++) {
+    if(!callback(arr[i])){
+      return false
+    }
+  }
+  return true
 }
 
-
+every(arr1, isGreterThan)
 
 //TESTS
 if (typeof describe === 'function') {
