@@ -13,8 +13,8 @@ let turn = red;
 let win = false;
 
 const isInputValid = (whichPiece, toWhere) => {
-  const checkNumberRange = (value) => { //fucntion to pass into every method to check number range
-    return value >= 0 && value <= 7;
+  const checkNumberRange = (num) => { //function to return proper number range
+    return num >= 0 && num <= 7;
   }
   return whichPiece.every(checkNumberRange) && toWhere.every(checkNumberRange) &&
     whichPiece.length === 2 && toWhere.length === 2 //check numbers are in range and length is 2
@@ -29,7 +29,6 @@ function Checker(name, symbol, count, king) { //name, symbol, count and king of 
 
 function Board() {
   this.grid = [];
-  // this.checkers = [];//FIXME??? not sure what this is for other than the original test
   this.createGrid = () => { // creates an 8x8 array, filled with null values
     for (let row = 0; row < 8; row++) { // loop to create the 8 rows
       this.grid[row] = [];
@@ -39,16 +38,15 @@ function Board() {
     }
   }
 
-  const setCheckerCount=()=> {
-    this.grid.forEach((row)=> {
-      row.forEach((column)=>{
-        if (column !== null){
-          ++column.count
+  const setCheckerCount=()=> {//this only runs once at the begining, mostly for the mocha tests
+    this.grid.forEach((row)=> {//loop through each row
+      row.forEach((column)=>{//and then each column of each row
+        if (column !== null){//if it's not null..
+          ++column.count//increase it's count
         };
       });
     });
   }
-
 
   this.viewGrid = () => { // prints out the board
     if (red.count === 0 && black.count === 0){
@@ -61,9 +59,7 @@ function Board() {
       for (let column = 0; column < 8; column++) { // a loop within a loop
         // if the location is "truthy" (contains a checker piece, in this case)
         if (this.grid[row][column]) {
-          // push the symbol of the check in that location into the array
           rowOfCheckers.push(this.grid[row][column].symbol);
-          // this.checkers.push(this.grid[row][column]);//FIXME this is purely for the test to pass, why else???
         } else {
           rowOfCheckers.push(' '); // just push in a blank space
         }
@@ -77,7 +73,7 @@ function Board() {
       console.log(`Current turn = ${turn.name}`.yellow.underline); //annouce turn each time
     }
     console.log(`${string}`);
-  }
+  }//end viewGrid
 
   this.fillBoard = () => {
     for (let row = 0; row < 3; row += 2) { //fill row 1 and 3 with same pattern black
@@ -97,7 +93,7 @@ function Board() {
       this.grid[6].splice(r, 1, red)
     }
 
-    // ***** below is just to help test win checks, so it only pushes 1 checker each
+    // ***** below is just to help test win checks, so it only pushes 1 checker each leave it commenented out**********************************
     // this.grid[0].splice(4, 1, black)
     // // black.count = 1;
     // this.grid[1].splice(1, 1, red)
@@ -107,8 +103,9 @@ function Board() {
     // // black.king = true;
     // // console.log(black, red);
     //**********END TEST AREA*************************
-  }
-} //end board class
+  }//end fillBoard
+} //end Board class
+
 
 function Game(begin, end) {
   this.begin = begin; //numneric array of original whichPiece input
@@ -177,7 +174,7 @@ function Game(begin, end) {
 
   const checkForWin = () => {
     return black.count === 0 || red.count === 0
-  }
+  }//end checkForWin
 
   const resetGame = () => {
     black.symbol = "b";
@@ -189,7 +186,7 @@ function Game(begin, end) {
     win = false;
     turn = red;
     this.start();
-  }
+  }//end resetGame
 
   const parsInput = (whichPiece, toWhere) => { //split and parse inputs into arays with numbers
     const numberwhichPiece = whichPiece.map((num) => { //parse each array into numbers
@@ -207,46 +204,43 @@ function Game(begin, end) {
       this.board.grid[this.board.end[0]][this.board.end[1]] === null) { //only can move to empty spot
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
         this.board.end[1] === this.board.begin[1] - 1) { //OR only move -1 column
-        if (turn === black || turn === red && red.king === true) { //black regular OR red kings can move +1 row
-          if (this.board.end[0] === this.board.begin[0] + 1) {//FIXME it's failing here
+        if (turn === black || turn === red && red.king === true) {
+          if (this.board.end[0] === this.board.begin[0] + 1) {//black regular OR red kings can move +1 row
             return true
           }
         }
-        if (turn === red || turn === black && black.king === true) { //red regular OR black kings can move -1 row
-          if (this.board.end[0] === this.board.begin[0] - 1) {
+        if (turn === red || turn === black && black.king === true) {
+          if (this.board.end[0] === this.board.begin[0] - 1) {//red regular OR black kings can move -1 row
             return true
           }
         }
-        //below we check for valid jump moves
-      } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 || //if trying to move +2 rows black
-        turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) { //or king red +2 rows
-        if (jump()) { //call methods for either legal jump moves for regular and kings
-          return true
+        //below we check for jump moves
+      } else if (this.board.end[0] === this.board.begin[0] + 2){//if moving +2 rows..
+        if (turn === black || turn === red && red.king === true){//and if black regular or red king...
+          if (canItJump()) { //call method for either legal jump moves for regular and kings
+            console.log('inside black reg red king');
+            return true
+          }
         }
-      } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 || //if trying to move -2 rows red
-        turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2 rows
-        if (jump()) { //call methods for either legal jump moves for regular and kings
-          return true
+      } else if (this.board.end[0] === this.board.begin[0] - 2){//if moving -2 rows..
+        if (turn === red || turn === black && black.king === true) {//and if red regular or black king...
+          if (canItJump()) { //call method for either legal jump moves for regular and kings
+            console.log('inside red reg black king');
+            return true
+          }
         }
       }
     }
   } //end isMoveLegal
 
-  const jump = () => { //check for jumps
+  const canItJump = () => { //check for jumps
     //use midpoint formula to store coordinates of the space inbetween the start and end for jumps
     const midPointRow = (this.board.begin[0] + this.board.end[0]) / 2;
     const midPointCol = (this.board.begin[1] + this.board.end[1]) / 2;
-
-    if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
+    if (this.board.end[1] === this.board.begin[1] + 2 || this.board.end[1] === this.board.begin[1] - 2) {
       if (this.board.grid[midPointRow][midPointCol] !== turn &&
         this.board.grid[midPointRow][midPointCol] !== null) { //check that jumped position is not your piece or null
         killChecker(midPointRow, midPointCol);//use the midpoint coordinates to pass onto killChecker
-        return true
-      }
-    } else if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
-      if (this.board.grid[midPointRow][midPointCol] !== turn &&
-        this.board.grid[midPointRow][midPointCol] !== null) { //check that jumped position is not your piece or null
-        killChecker(midPointRow, midPointCol); //use the midpoint coordinates to pass onto killChecker
         return true
       }
     }
@@ -254,7 +248,6 @@ function Game(begin, end) {
 
   const killChecker = (rowPosition, columnPostion) => { //pass in coordinates from revlevant jump checks to kill a checker
     this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
-  //FIXME, if using this.checkers, remove one here..
     if (turn === red) {
       black.count-- //lower black count by 1
       console.log(`${black.name} has lost a checker!`.red);
@@ -262,7 +255,7 @@ function Game(begin, end) {
       red.count-- //lower red count by 1
       console.log(`${red.name} has lost a checker!`.red);
     }
-  }
+  }//end killChecker
 } //end Game class
 
 function getPrompt() {
@@ -292,7 +285,7 @@ if (typeof describe === 'function') {
     it('board should have 24 checkers', () => {
       game.start();
       game.board.viewGrid();
-      // assert.equal(game.board.checkers.length, 24);//FIXME WTF is checkers????? I bet it's tracking how many checks on the board
+      // assert.equal(game.board.checkers.length, 24);//FIXME WTF is checkers????? I bet it's tracking how many checks on the board, I'm not using it so I used the one below
       const checkerCount = red.count + black.count
       assert.equal(checkerCount, 24);
     });
