@@ -224,7 +224,7 @@ function Game(begin, end) {
         }
       } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 || //if trying to move -2 rows red
         turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2 rows
-        if (jump()) { //call methods for either legal jump moves for red or black kings
+        if (jump()) { //call methods for either legal jump moves for regular and kings
           return true
         }
       }
