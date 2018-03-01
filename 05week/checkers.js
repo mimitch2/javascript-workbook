@@ -97,13 +97,14 @@ function Board() {
     }
 
     // ***** below is just to help test win checks, so it only pushes 1 checker each
-    // this.grid[5].splice(5, 1, black)
-    // black.count = 1;
-    // this.grid[6].splice(6, 1, red)
-    // red.count = 1;
+    // this.grid[0].splice(4, 1, black)
+    // // black.count = 1;
+    // this.grid[1].splice(1, 1, red)
+    // // red.count = 1;
     // turn = red; //change this back and forth for easy win tests
     // // red.king = true;
     // // black.king = true;
+    // // console.log(black, red);
     //**********END TEST AREA*************************
   }
 } //end board class
@@ -129,7 +130,7 @@ function Game(begin, end) {
         if (!black.king || !red.king) { //only call kingMe if one or both are not kinged
           kingMe();
         }
-        if (!win){
+        if (!win) {
           if (turn === red) { //switch turns
             turn = black;
           } else {
@@ -152,7 +153,7 @@ function Game(begin, end) {
   } //end movechecker
 
   const kingMe = () => {
-    let blackKingCounter = 0;//these count how many pieces made it to end of board
+    let blackKingCounter = 0; //these count how many pieces made it to end of board
     let redKingCounter = 0;
 
     if (turn === black && this.board.end[0] === 7) { //if black hits row 7
@@ -161,6 +162,7 @@ function Game(begin, end) {
     if (blackKingCounter === 1) { //if counter reaches threshold...
       black.king = true; //make all black pieces kings and change symbol
       black.symbol = "B";
+      console.log(`Black has been kinged!`.green);
     }
     if (turn === red && this.board.end[0] === 0) { //if red hits row 0
       redKingCounter++; //itterate how many times he has
@@ -168,14 +170,15 @@ function Game(begin, end) {
     if (redKingCounter === 1) { //if counter reaches threshold...
       red.king = true; //make all red pieces kings and change symbol
       red.symbol = "R";
+      console.log(`Red has been kinged!`.green);
     }
   } //end KingMe
 
-  const checkForWin=()=> {
+  const checkForWin = () => {
     return black.count === 0 || red.count === 0
   }
 
-  const resetGame=()=> {
+  const resetGame = () => {
     black.symbol = "b";
     black.count = 12;
     red.symbol = "r";
@@ -203,75 +206,54 @@ function Game(begin, end) {
       this.board.grid[this.board.end[0]][this.board.end[1]] === null) { //only can move to empty spot
       if (this.board.end[1] === this.board.begin[1] + 1 || //and only move +1 column
         this.board.end[1] === this.board.begin[1] - 1) { //OR only move -1 column
-
         if (turn === black || turn === red && red.king === true) { //black regular OR red kings can move +1 row
-          if (this.board.end[0] === this.board.begin[0] + 1) {
+          if (this.board.end[0] === this.board.begin[0] + 1) {//FIXME it's failing here
             return true
           }
-        } else if (turn === red || turn === black && black.king === true) { //red regular OR black kings can move +1 row
+        }
+        if (turn === red || turn === black && black.king === true) { //red regular OR black kings can move -1 row
           if (this.board.end[0] === this.board.begin[0] - 1) {
             return true
           }
-        } //below we check for valid jump moves
+        }
+        //below we check for valid jump moves
       } else if (turn === black && this.board.end[0] === this.board.begin[0] + 2 || //if trying to move +2 rows black
         turn === red && red.king === true && this.board.end[0] === this.board.begin[0] + 2) { //or king red +2 rows
-        if (blackOrRedKingJumpRight() || blackOrRedKingJumpLeft()) { //call methods for either legal jump moves for black or red kings
+        if (jump()) { //call methods for either legal jump moves for regular and kings
           return true
         }
       } else if (turn === red && this.board.end[0] === this.board.begin[0] - 2 || //if trying to move -2 rows red
         turn === black && black.king === true && this.board.end[0] === this.board.begin[0] - 2) { //or king black -2 rows
-        if (redOrBlackKingJumpRight() || redOrBlackKingJumpLeft()) { //call methods for either legal jump moves for red or black kings
+        if (jump()) { //call methods for either legal jump moves for red or black kings
           return true
         }
       }
     }
   } //end isMoveLegal
 
-  /******the four methods below each check for specific jump scenarios.  FIXME both right jumps and both left jumps START with the same initial condition. Try to refactor*/
+  const jump = () => { //check for jumps
+    //use midpoint formula to store coordinates of the space inbetween the start and end for jumps
+    const midPointRow = (this.board.begin[0] + this.board.end[0]) / 2;
+    const midPointCol = (this.board.begin[1] + this.board.end[1]) / 2;
 
-  const blackOrRedKingJumpRight = () => { //this to check JUST black jumps to the right
     if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a right jump
-      if (this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] - 1] !== null) { //check that jumped position is not black or null
-        killChecker(this.board.end[0] - 1, this.board.end[1] - 1); //
+      if (this.board.grid[midPointRow][midPointCol] !== turn &&
+        this.board.grid[midPointRow][midPointCol] !== null) { //check that jumped position is not your piece or null
+        killChecker(midPointRow, midPointCol);//use the midpoint coordinates to pass onto killChecker
+        return true
+      }
+    } else if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
+      if (this.board.grid[midPointRow][midPointCol] !== turn &&
+        this.board.grid[midPointRow][midPointCol] !== null) { //check that jumped position is not your piece or null
+        killChecker(midPointRow, midPointCol); //use the midpoint coordinates to pass onto killChecker
         return true
       }
     }
-  } //end blackOrRedKingJumpRight
-
-  const blackOrRedKingJumpLeft = () => { //this to check JUST black jumps to the left
-    if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
-      if (this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== turn &&
-        this.board.grid[this.board.end[0] - 1][this.board.end[1] + 1] !== null) { //check that jumped postion is not black or null
-        killChecker(this.board.end[0] - 1, this.board.end[1] + 1); //if it's niether, remove opposite player
-        return true
-      }
-    }
-  } //end blackOrRedKingJumpLeft
-
-  const redOrBlackKingJumpRight = () => { //this to check JUST red jumps to the right
-    if (this.board.end[1] === this.board.begin[1] + 2) { //if +2 columns it's a red right jump
-      if (this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== turn &&
-        this.board.grid[this.board.end[0] + 1][this.board.end[1] - 1] !== null) { //check that jumped postion is not red or null
-        killChecker(this.board.end[0] + 1, this.board.end[1] - 1); //if it's niether, remove opposite player
-        return true
-      }
-    }
-  } //end redOrBlackKingJumpRight
-
-  const redOrBlackKingJumpLeft = () => { //this to check JUST red jumps to the left
-    if ((this.board.end[1] === this.board.begin[1] - 2)) { //if -2 columns it's a left jump
-      if (this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== turn &&
-        this.board.grid[this.board.end[0] + 1][this.board.end[1] + 1] !== null) { //check that jumped postion is not red or null
-        killChecker(this.board.end[0] + 1, this.board.end[1] + 1); //if it's niether, remove opposite player
-        return true
-      }
-    }
-  } //end redOrBlackKingJumpLeft
+  }//end jump
 
   const killChecker = (rowPosition, columnPostion) => { //pass in coordinates from revlevant jump checks to kill a checker
     this.board.grid[rowPosition].splice([columnPostion], 1, null) //splice out the jumped checker
-    //FIXME, if using this.checkers, remove one here..
+  //FIXME, if using this.checkers, remove one here..
     if (turn === red) {
       black.count-- //lower black count by 1
       console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`.red);
@@ -294,11 +276,6 @@ function getPrompt() {
 
 const game = new Game([null, null], [null, null]); //creates a new Game class instance with begin and end constuctors
 game.start(); //passed game instance to the start method inside of Game class
-
-
-
-
-
 
 
 
