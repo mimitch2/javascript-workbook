@@ -7,8 +7,8 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
-const black = new Checker("Black", 'b', 12, false); //FIXME can I reduce this scope???? so far no...
-const red = new Checker('Red', 'r', 12, false);
+const black = new Checker("Black", 'b', 0, false); //FIXME can I reduce this scope???? so far no...
+const red = new Checker('Red', 'r', 0, false);
 let turn = red;
 let win = false;
 
@@ -39,21 +39,22 @@ function Board() {
     }
   }
 
-  // const setCheckerCount=()=> {//FIXME, can't get this to work correctly, it always starts with 0
-  //   console.log('start checkercount');
-  //   this.grid.forEach((item)=> {
-  //     if (this.grid[item] !== null){
-  //       this.grid[item].count++
-  //       console.log('YES');
-  //     }
-  //
-  //   });
-  //   console.log('after checkercount', this.grid);
-  //   console.log(red, black)
-  // }
-  // setCheckerCount();
+  const setCheckerCount=()=> {
+    this.grid.forEach((row)=> {
+      row.forEach((column)=>{
+        if (column !== null){
+          ++column.count
+        };
+      });
+    });
+  }
+
 
   this.viewGrid = () => { // prints out the board
+    if (red.count === 0 && black.count === 0){
+      setCheckerCount();//only run checkerCount at the start of game
+    };
+    console.log(`Red has ${red.count} checkers's left, Black has ${black.count} checkers's left.`);
     let string = "  0 1 2 3 4 5 6 7\n"; // add our column numbers
     for (let row = 0; row < 8; row++) { // we start with our row number in our array
       const rowOfCheckers = [row];
@@ -256,10 +257,10 @@ function Game(begin, end) {
   //FIXME, if using this.checkers, remove one here..
     if (turn === red) {
       black.count-- //lower black count by 1
-      console.log(`${black.name} has lost a piece and only has ${black.count} checkers left!`.red);
+      console.log(`${black.name} has lost a checker!`.red);
     } else {
       red.count-- //lower red count by 1
-      console.log(`${red.name} has lost a piece and only has ${red.count} checkers left!`.red);
+      console.log(`${red.name} has lost a checker!`.red);
     }
   }
 } //end Game class
