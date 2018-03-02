@@ -17,15 +17,26 @@ class App extends Component {
     }
   }
 
-
+ // isItNull=(position)=> {
+ // return (postion === null)
+ // }
 
   handleClickCell=(event)=>{
+
     const wasClicked = event.target.getAttribute("data-cell").split('').map((num)=>{
           return Number(num);//get the data-cell value for whatever was clicked, and turn into array of numbers
     });
     const temp = this.state.board//set a temporary container to hold this.state.board
+    // console.log(temp[wasClicked[0]][wasClicked[1]]);
+    if (temp[wasClicked[0]][wasClicked[1]] === null){
     temp[wasClicked[0]][wasClicked[1]]=this.state.player//assign the array index to current player
       this.setState({temp: temp});
+      if (this.state.player === "X"){
+      this.setState({player: "O"})
+    }else{
+      this.setState({player: "X"})
+}
+}
   }
 
 
