@@ -22,6 +22,11 @@
   font-size: large;
 }
 
+#main-board {
+  margin-left: 100px;
+  margin-top: 30px;
+}
+
 div[data-cell] {
   width: 100px;
   height: 100px;
@@ -36,7 +41,14 @@ div[data-cell] {
   clear: both;
 }
 
+#reset-button {
+  margin-top: 120px;
+  width: 300px;
+  text-align: center;
+  font-size: 20px;
+}
 .announce-winner {
+  margin-top: 120px;
   width: 300px;
   text-align: center;
   font-size: 50px;

@@ -80,7 +80,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Tic-Tac-Toe React</h1>
         </header>
-       <div>
+       <div id="main-board">
          <div className="row">
            <div data-cell="00" onClick={this.handleClickCell}>{this.state.board[0][0]}</div>
            <div data-cell="01" onClick={this.handleClickCell}>{this.state.board[0][1]}</div>
@@ -97,7 +97,8 @@ class App extends Component {
            <div data-cell="22" onClick={this.handleClickCell}>{this.state.board[2][2]}</div>
 
          </div>
-         <div className="announce-winner">{this.state.winner}</div>
+         <div className="announce-winner">{this.state.winner}<button id="reset-button">New Game</button></div>
+
         </div>
 </div>
     );
