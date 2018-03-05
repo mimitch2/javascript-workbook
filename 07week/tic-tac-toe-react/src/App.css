@@ -40,7 +40,11 @@ div[data-cell] {
 
 .reset-button {
   display: none;
-  margin-top: 120px;
+}
+
+.reset-button-show {
+  display: block;
+  margin-top: 10px;
   width: 300px;
   text-align: center;
   font-size: 20px;
