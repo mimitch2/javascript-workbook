@@ -6,25 +6,38 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isCellEmpty: true,
       player: 'X',
       board: [
-         [[null], [null], [null]],
-         [[null], [null], [null]],
-         [[null], [null], [null]]
-       ],
-       winner: ''
+      [null, null, null],
+      [null, null, null],
+      [null, null, null]
+      ],
+      turns: 1,
+      winner: '',
+      win: false,
     }
   }
 
+  resetGame=()=> {
+   this.setState({player: 'X'})
+   this.setState({board: [
+   [null, null, null],
+   [null, null, null],
+   [null, null, null]
+   ]})
+   this.setState({winner: ''})
+   this.setState({win: false})
+   this.setState({turns: 0})
+  }
 
- checkForWin=(board)=> {
-   console.log(board);
-     if(this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)){
-      // console.log(`${this.state.player} WINS!!!`);
+  checkForWin=(board)=> {
+    if(this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)){
       this.setState({winner: `${this.state.player} WINS!!!!`})
-     }
- }
+      this.setState({win: true})//set this to prevent clicks if win or tie
+    }else if (this.state.turns === 9){//if it's 9 turns and no win, then it's a tie.
+      this.setState({winner: `It's a tie.`})
+    }
+  }
 
  horizontalWin=(board)=> {
    return board[0].every(x=>x===this.state.player) ||
@@ -33,40 +46,42 @@ class App extends Component {
  }
 
  verticalWin=(board)=>{
-  return (board[0][0] === this.state.player && board[1][0] === this.state.player && board[2][0] === this.state.player) ||
+  return (board[0][0] === this.state.player && board[1][0] === this.state.player && board[2][0] === this.state.player)||
       (board[0][1] === this.state.player && board[1][1] === this.state.player && board[2][1] === this.state.player) ||
       (board[0][2] === this.state.player && board[1][2] === this.state.player && board[2][2] === this.state.player)
 
  }
 
- diagonalWin=(board)=>{
-  if (board[1][1] === this.state.player){
-    if ((board[0][0] === this.state.player && board[2][2] === this.state.player) ||
-      (board[0][2] === this.state.player && board[2][0] === this.state.player)) {
-    return true
-    }
+  diagonalWin=(board)=>{
+   if (board[1][1] === this.state.player){
+     if ((board[0][0] === this.state.player && board[2][2] === this.state.player) ||
+       (board[0][2] === this.state.player && board[2][0] === this.state.player)) {
+     return true
+     }
+   }
   }
- }
+
+  isItLegal=(item)=> {
+   return item === null && this.state.win === false
+  }
 
 
   handleClickCell=(e)=>{
-
-    console.log(e.target.dataset.cell);
     const wasClicked = e.target.dataset.cell.split('').map((num)=>{
-          return Number(num);//get the data-cell value for whatever was clicked, and turn into array of numbers
+          return Number(num);//get the data-cell value for whatever cell was clicked, and turn into array of numbers FIXME, is there a better way to do this?
     });
     const temp = this.state.board//set a temporary container to hold this.state.board
-    console.log(temp[wasClicked[0]][wasClicked[1]]);
-    // if (temp[wasClicked[0]][wasClicked[1]]){
-    temp[wasClicked[0]][wasClicked[1]]=this.state.player//assign the array index to current player
-
-      this.setState({temp: temp});
-      this.checkForWin(temp);
-      if (this.state.player === "X"){
+    const finalPosition = temp[wasClicked[0]][wasClicked[1]];//use wasClicked to translate the clicked cell to board array
+    if (this.isItLegal(finalPosition)){
+      temp[wasClicked[0]][wasClicked[1]] = this.state.player//assign the array index to current player
+      this.setState({turns: this.state.turns + 1})//itterate turns
+      this.setState({temp: temp});//insert player symbol into correct array postion
+      this.checkForWin(temp);//check for a win
+      if (this.state.player === "X"){//switch player turn
       this.setState({player: "O"})
     }else{
       this.setState({player: "X"})
-   //  }
+    }
    }
   }
 
@@ -97,10 +112,12 @@ class App extends Component {
            <div data-cell="22" onClick={this.handleClickCell}>{this.state.board[2][2]}</div>
 
          </div>
-         <div className="announce-winner">{this.state.winner}<button id="reset-button">New Game</button></div>
+         <div className="announce-winner">{this.state.winner}
+           <button className="reset-button" onClick={this.resetGame}>New Game</button>
+          </div>
 
         </div>
-</div>
+      </div>
     );
   }
 }
