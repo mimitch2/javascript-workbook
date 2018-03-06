@@ -26,11 +26,10 @@ class App extends Component {
         [null, null, null],
         [null, null, null],
         [null, null, null]
-      ]
-    })
+      ]})
     this.setState({winner: ''})
     this.setState({win: false})
-    this.setState({turns: 0})
+    this.setState({turns: 1})
     this.setState({cssClass: "reset-button"})
   }
 
@@ -40,7 +39,8 @@ class App extends Component {
       this.setState({win: true}) //set this to prevent clicks if win or tie
       this.setState({cssClass: "reset-button-show"})
     } else if (this.state.turns === 9) { //if it's 9 turns and no win, then it's a tie.
-      this.setState({winner: `It's a tie.`})
+      this.setState({winner: `It's a tie`})
+      this.setState({cssClass: "reset-button-show"})
     }
   }
 
@@ -62,7 +62,7 @@ class App extends Component {
   }
 
   isItLegal = (item) => {
-    return item === null && this.state.win === false//only allow clicking if cell is null and noone has won
+    return item === null && this.state.win === false //only allow clicking if cell is null and noone has won
   }
 
   handleClickCell = (e) => {
@@ -86,7 +86,7 @@ class App extends Component {
     }
   }
 
-  render() {
+  render = () => {
     return (<div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo"/>
@@ -107,12 +107,9 @@ class App extends Component {
           <div data-cell="20" onClick={this.handleClickCell}>{this.state.board[2][0]}</div>
           <div data-cell="21" onClick={this.handleClickCell}>{this.state.board[2][1]}</div>
           <div data-cell="22" onClick={this.handleClickCell}>{this.state.board[2][2]}</div>
-
         </div>
-        <div className="announce-winner">{this.state.winner}
-          <button className={this.state.cssClass} onClick={this.resetGame}>New Game</button>
-        </div>
-
+        <div className="announce-winner">{this.state.winner}</div>
+        <button className={this.state.cssClass} onClick={this.resetGame}>New Game</button>
       </div>
     </div>);
   }
