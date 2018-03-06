@@ -15,7 +15,8 @@ class App extends Component {
       turns: 1,
       winner: '',
       win: false,
-      cssClass: "reset-button"
+      cssClass: "reset-button",
+      turnClass: "announce-winner"
     }
   }
 
@@ -31,6 +32,7 @@ class App extends Component {
     this.setState({win: false})
     this.setState({turns: 1})
     this.setState({cssClass: "reset-button"})
+    this.setState({turnClass: "announce-winner"})
   }
 
   checkForWin = (board) => {
@@ -38,9 +40,11 @@ class App extends Component {
       this.setState({winner: `${this.state.player} WINS!!!!`})
       this.setState({win: true}) //set this to prevent clicks if win or tie
       this.setState({cssClass: "reset-button-show"})
+      this.setState({turnClass: "turn-hide"})
     } else if (this.state.turns === 9) { //if it's 9 turns and no win, then it's a tie.
       this.setState({winner: `It's a tie`})
       this.setState({cssClass: "reset-button-show"})
+      this.setState({turnClass: "turn-hide"})
     }
   }
 
@@ -73,9 +77,7 @@ class App extends Component {
     const finalPosition = temp[wasClicked[0]][wasClicked[1]]; //use wasClicked to translate the clicked cell to board array
     if (this.isItLegal(finalPosition)) {
       temp[wasClicked[0]][wasClicked[1]] = this.state.player //assign the array index to current player
-      this.setState({
-        turns: this.state.turns + 1
-      }) //itterate turns
+      this.setState({turns: this.state.turns + 1}) //itterate turns
       this.setState({temp: temp}); //insert player symbol into correct array postion
       this.checkForWin(temp); //check for a win
       if (this.state.player === "X") { //switch player turn
@@ -108,6 +110,7 @@ class App extends Component {
           <div data-cell="21" onClick={this.handleClickCell}>{this.state.board[2][1]}</div>
           <div data-cell="22" onClick={this.handleClickCell}>{this.state.board[2][2]}</div>
         </div>
+        <div className={this.state.turnClass}>Turn: {this.state.player}</div>
         <div className="announce-winner">{this.state.winner}</div>
         <button className={this.state.cssClass} onClick={this.resetGame}>New Game</button>
       </div>

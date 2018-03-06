@@ -24,6 +24,9 @@
   font-size: 1.5em;
 }
 
+
+
+
 #main-board {
   margin-left: 137px;
   margin-top: 40px;
@@ -46,10 +49,16 @@ div[data-cell] {
 }
 
 .announce-winner {
+  position: relative;
   margin-top: 120px;
-  width: 300px;
+  width: 310px;
   text-align: center;
   font-size: 4.0em;
+}
+
+
+.turn-hide {
+  display: none;
 }
 
 .reset-button {
