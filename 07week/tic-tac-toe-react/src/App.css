@@ -1,8 +1,9 @@
 
 .App {
-  /* font-family: 'Roboto Mono', monospace; */
+  font-family: 'Ubuntu Mono', monospace;
   text-align: center;
   background-color: grey;
+  border: 2px solid black;
   height: 700px;
   width: 600px;
 }
@@ -13,7 +14,7 @@
 }
 
 .App-header {
-  margin-top: -40px;
+  /* margin-top: -40px; */
   background-color: #222;
   height: 150px;
   padding: 14px;
@@ -21,10 +22,8 @@
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 1.8em;
 }
-
-
 
 
 #main-board {
@@ -38,7 +37,7 @@ div[data-cell] {
   height: 100px;
   background-color: lightgrey;
   float: left;
-  border: 1px solid #808080;
+  border: 1px solid black;
   font-size: 100px;
   text-shadow: 2px 2px 10px white;
   text-align: center;
@@ -53,7 +52,7 @@ div[data-cell] {
   margin-top: 120px;
   width: 310px;
   text-align: center;
-  font-size: 4.0em;
+  font-size: 3.4em;
 }
 
 
@@ -70,7 +69,7 @@ div[data-cell] {
   font-size: 20px;
   width: 200px;
   margin-left: -140px;
-  margin-top: 10px;
+  margin-top: 18px;
 }
 
 @keyframes App-logo-spin {

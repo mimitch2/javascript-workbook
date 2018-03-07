@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class App extends Component {
+ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ class App extends Component {
 
   checkForWin = (board) => {
     if (this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)) {
-      this.setState({winner: `${this.state.player} WINS!!!!`})
+      this.setState({winner: `${this.state.player} wins!!`})
       this.setState({win: true}) //set this to prevent clicks if win or tie
       this.setState({cssClass: "reset-button-show"})
       this.setState({turnClass: "turn-hide"})
