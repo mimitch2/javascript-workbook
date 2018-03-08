@@ -73,7 +73,7 @@ import './App.css';
     const wasClicked = e.target.dataset.cell.split('').map((num) => {
       return Number(num); //get the data-cell value for whatever cell was clicked, and turn into array of numbers FIXME, is there a better way to do this?
     });
-    const temp = this.state.board //set a temporary container to hold this.state.board
+    const temp = [...this.state.board] //set a temporary container to hold this.state.board
     const finalPosition = temp[wasClicked[0]][wasClicked[1]]; //use wasClicked to translate the clicked cell to board array
     if (this.isItLegal(finalPosition)) {
       temp[wasClicked[0]][wasClicked[1]] = this.state.player //assign the array index to current player
