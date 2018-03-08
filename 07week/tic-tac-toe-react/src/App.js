@@ -39,12 +39,12 @@ import './App.css';
     if (this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)) {//checkk all three win possibilities
       this.setState({winner: `${this.state.player} wins!!`})//announce the win
       this.setState({win: true}) //set this to prevent clicks if win or tie
-      this.setState({cssClass: "reset-button-show"})//show announce
+      this.setState({cssClass: "reset-button-show"})//show new game button
       this.setState({turnClass: "turn-hide"})//hide turn indicator
     } else if (this.state.turns === 9) { //if it's 9 turns and no win, then it's a tie.
       this.setState({winner: `It's a tie`})
-      this.setState({cssClass: "reset-button-show"})
-      this.setState({turnClass: "turn-hide"})
+      this.setState({cssClass: "reset-button-show"})//show new game button
+      this.setState({turnClass: "turn-hide"})//hide turn indicator
     }
   }
 
