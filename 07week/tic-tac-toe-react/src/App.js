@@ -6,21 +6,21 @@ import './App.css';
   constructor(props) {
     super(props);
     this.state = {
-      player: 'X',
-      board: [
+      player: 'X',//track turns
+      board: [//initial 3x3 array
         [null, null, null],
         [null, null, null],
         [null, null, null]
       ],
-      turns: 1,
-      winner: '',
-      win: false,
-      cssClass: "reset-button",
-      turnClass: "announce-winner"
+      turns: 1,//use this to detrimine if it's a tie
+      winner: '',//annouce the winner
+      win: false,//use to prevent clicks after a win/tie
+      cssClass: "reset-button",//use to show/hide turn indicator
+      turnClass: "announce-winner"//use to show/hide winner announce
     }
   }
 
-  resetGame = () => {
+  resetGame = () => {//rest everything to starting values
     this.setState({player: 'X'})
     this.setState({
       board: [
@@ -36,11 +36,11 @@ import './App.css';
   }
 
   checkForWin = (board) => {
-    if (this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)) {
-      this.setState({winner: `${this.state.player} wins!!`})
+    if (this.horizontalWin(board) || this.verticalWin(board) || this.diagonalWin(board)) {//checkk all three win possibilities
+      this.setState({winner: `${this.state.player} wins!!`})//announce the win
       this.setState({win: true}) //set this to prevent clicks if win or tie
-      this.setState({cssClass: "reset-button-show"})
-      this.setState({turnClass: "turn-hide"})
+      this.setState({cssClass: "reset-button-show"})//show announce
+      this.setState({turnClass: "turn-hide"})//hide turn indicator
     } else if (this.state.turns === 9) { //if it's 9 turns and no win, then it's a tie.
       this.setState({winner: `It's a tie`})
       this.setState({cssClass: "reset-button-show"})
