@@ -19,20 +19,34 @@ class App extends Component {
   }
 
   handleSubmit = (e) => {
-    this.setState({list: [...this.state.list, this.state.inputValue], inputValue: ''})
+    this.setState({
+      list: [
+        ...this.state.list,
+        this.state.inputValue
+      ],
+      inputValue: ''
+    })
   }
 
-
+  // handleKeyPress = (e) => {
+  //   console.log('INSIDE');
+  //   if (e.keyCode === 13 && this.state.inputValue.length > 0) {
+  //     this.handleSubmit();
+  //   }
+  // }
 
   render() {
     const divStyle = {
       marginTop: '30px'
     }
     return (<div className="App" style={divStyle}>
-      <input value={this.state.inputValue} onChange={this.handleInputChange}></input>
+      <input value={this.state.inputValue} onChange={this.handleInputChange}
+        onKeyPress={e => {if (e.key === "Enter" && this.state.inputValue.length > 0) {
+          this.handleSubmit();}
+        }}></input>
       <button type="button" onClick={this.handleSubmit}>Submit</button>
       <MuiThemeProvider>
-        <Listcontainer listItems = {this.state.list}/>
+        <Listcontainer listItems={this.state.list}/>
       </MuiThemeProvider>
 
     </div>);

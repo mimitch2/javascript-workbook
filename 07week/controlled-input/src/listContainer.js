@@ -8,7 +8,6 @@ import Checkbox from 'material-ui/Checkbox';
 class Listcontainer extends Component {
 
   render() {
-    console.log(this.props.listValue);
     const divStyle = {
       marginTop: '30px'
     }
