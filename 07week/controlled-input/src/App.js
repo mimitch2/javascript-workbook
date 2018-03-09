@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Listcontainer from './listContainer';
 
@@ -19,18 +19,20 @@ class App extends Component {
   }
 
   handleSubmit = (e) => {
-    const temp = [...this.state.list]
-    temp.push(this.state.inputValue);
-    this.setState({list: temp, inputValue: ''})
-    console.log(temp);
+    this.setState({list: [...this.state.list, this.state.inputValue], inputValue: ''})
   }
 
+
+
   render() {
-    return (<div className="App">
+    const divStyle = {
+      marginTop: '30px'
+    }
+    return (<div className="App" style={divStyle}>
       <input value={this.state.inputValue} onChange={this.handleInputChange}></input>
       <button type="button" onClick={this.handleSubmit}>Submit</button>
       <MuiThemeProvider>
-        <Listcontainer/>
+        <Listcontainer listItems = {this.state.list}/>
       </MuiThemeProvider>
 
     </div>);
