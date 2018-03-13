@@ -28,17 +28,11 @@ class App extends Component {
     })
   }
 
-  // handleKeyPress = (e) => {
-  //   console.log('INSIDE');
-  //   if (e.keyCode === 13 && this.state.inputValue.length > 0) {
-  //     this.handleSubmit();
-  //   }
-  // }
-
   render() {
     const divStyle = {
       marginTop: '30px'
     }
+
     return (<div className="App" style={divStyle}>
       <input value={this.state.inputValue} onChange={this.handleInputChange}
         onKeyPress={e => {if (e.key === "Enter" && this.state.inputValue.length > 0) {
